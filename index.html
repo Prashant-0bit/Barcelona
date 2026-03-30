@@ -4,7 +4,17 @@
   <meta charset="UTF-8">
   <meta name="referrer" content="no-referrer" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  
   <title>Barna - Barcelona Guide</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Barna">
+  <meta name="theme-color" content="#FF385C">
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%23FF385C%22/><path d=%22M50 18 C50 18, 58 40, 82 50 C58 60, 50 82, 50 82 C50 82, 42 60, 18 50 C42 40, 50 18, 50 18 Z%22 fill=%22white%22/><circle cx=%2250%22 cy=%2250%22 r=%228%22 fill=%22white%22/></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23FF385C%22/><path d=%22M50 18 C50 18, 58 40, 82 50 C58 60, 50 82, 50 82 C50 82, 42 60, 18 50 C42 40, 50 18, 50 18 Z%22 fill=%22white%22/><circle cx=%2250%22 cy=%2250%22 r=%228%22 fill=%22white%22/></svg>">
+
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -273,7 +283,8 @@
       const item = ALL_ITEMS.find(i => i.id === itemId);
       if(!item) return;
 
-      const mapsUrl = `http://googleusercontent.com/maps.google.com/search?q=${item.map}`;
+      // FIXED GOOGLE MAPS SEARCH URL FORMAT
+      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${item.map}`;
       
       detailView.innerHTML = `
         <div class="detail-hero" style="background-image: url('${item.img}')">
@@ -328,7 +339,8 @@
         dayItems.forEach((item, index) => {
           const tagClass = `day-${item.day}`;
           const delay = globalIndex * 0.05; 
-          const mapsUrl = `http://googleusercontent.com/maps.google.com/search?q=${item.map}`;
+          // FIXED GOOGLE MAPS SEARCH URL FORMAT
+          const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${item.map}`;
           
           html += `
             <div class="card" style="animation-delay: ${delay}s" onclick="openDetail('${item.id}')">
@@ -364,7 +376,8 @@
       dataArray.forEach((item, index) => {
         const tagClass = item.tagClass ? item.tagClass : 'tag-default';
         const delay = index * 0.05; 
-        const mapsUrl = `http://googleusercontent.com/maps.google.com/search?q=${item.map}`;
+        // FIXED GOOGLE MAPS SEARCH URL FORMAT
+        const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${item.map}`;
         
         html += `
           <div class="card" style="animation-delay: ${delay}s" onclick="openDetail('${item.id}')">
