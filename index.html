@@ -3,137 +3,150 @@
 <head>
   <meta charset="UTF-8">
   <meta name="referrer" content="no-referrer" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BarnaGo</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>BarnaGo - Premium App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #FF385C; /* A modern, vibrant coral/red like Airbnb */
+      --primary: #FF385C; 
+      --primary-dark: #E61E4D;
       --secondary: #222222;
       --bg-color: #F7F7F9;
       --card-bg: #FFFFFF;
       --text-main: #222222;
       --text-muted: #717171;
       --border-color: #EBEBEB;
-      --tag-bg: #F1F1F1;
-      --tag-text: #222222;
     }
 
-    * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+    * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
 
-    body { margin: 0; background-color: var(--bg-color); color: var(--text-main); padding-bottom: 3rem; }
+    body { margin: 0; background-color: var(--bg-color); color: var(--text-main); padding-bottom: 4rem; }
 
-    /* Modern Gradient Header */
+    /* --- Premium Header with SVG Logo --- */
     header {
-      background: linear-gradient(135deg, #FF385C 0%, #E61E4D 100%);
-      color: white; text-align: center; padding: 1.5rem;
-      font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white; padding: 1.2rem;
       position: sticky; top: 0; z-index: 101;
-      box-shadow: 0 4px 12px rgba(229, 30, 77, 0.2);
+      box-shadow: 0 4px 20px rgba(229, 30, 77, 0.25);
+      display: flex; justify-content: center; align-items: center;
     }
 
-    /* Sleek Navigation */
+    .logo {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px;
+    }
+
+    /* --- Glassmorphism Navigation --- */
     nav {
       display: flex; overflow-x: auto; white-space: nowrap;
-      background-color: var(--card-bg);
-      border-bottom: 1px solid var(--border-color);
-      position: sticky; top: 70px; z-index: 100;
-      scrollbar-width: none; /* Hide scrollbar Firefox */
+      background-color: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(235, 235, 235, 0.5);
+      position: sticky; top: 68px; z-index: 100;
+      scrollbar-width: none; 
     }
-    nav::-webkit-scrollbar { display: none; } /* Hide scrollbar Chrome/Safari */
+    nav::-webkit-scrollbar { display: none; }
 
     nav button {
-      flex: 1; padding: 1.2rem 1.5rem; border: none; background: none;
-      font-size: 0.95rem; font-weight: 600; color: var(--text-muted);
-      cursor: pointer; transition: 0.2s ease-in-out;
-      border-bottom: 3px solid transparent;
+      flex: 1; padding: 1.2rem 1.2rem; border: none; background: none;
+      font-size: 0.95rem; font-weight: 700; color: var(--text-muted);
+      cursor: pointer; transition: 0.3s ease;
+      border-bottom: 3px solid transparent; opacity: 0.7;
     }
 
-    nav button:hover { color: var(--secondary); background-color: #FAFAFA; }
-    nav button.active { color: var(--text-main); border-bottom: 3px solid var(--primary); }
+    nav button:hover { opacity: 1; color: var(--secondary); }
+    nav button.active { color: var(--primary); border-bottom: 3px solid var(--primary); opacity: 1; }
 
-    main { max-width: 1100px; margin: 2rem auto; padding: 0 1.5rem; }
+    main { max-width: 1100px; margin: 1.5rem auto; padding: 0 1.2rem; }
 
-    /* Sub-filter bar (Food Categories) - Pill shaped */
+    /* --- Scrollable Pill Filters --- */
     #filter-bar {
       display: none; overflow-x: auto; white-space: nowrap;
-      padding: 0.5rem 0 1.5rem 0; margin-bottom: 1rem;
-      scrollbar-width: none;
+      padding: 0.5rem 0 1.5rem 0; scrollbar-width: none;
     }
     #filter-bar::-webkit-scrollbar { display: none; }
     
     .filter-btn {
       background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main);
       padding: 0.6rem 1.2rem; border-radius: 30px; font-weight: 600; font-size: 0.9rem;
-      cursor: pointer; margin-right: 0.8rem; transition: 0.2s box-shadow;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      cursor: pointer; margin-right: 0.8rem; transition: all 0.2s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.02);
     }
-    .filter-btn:hover { border-color: var(--text-main); }
-    .filter-btn.active { background-color: var(--text-main); color: white; border-color: var(--text-main); }
+    .filter-btn:active { transform: scale(0.95); }
+    .filter-btn.active { background-color: var(--secondary); color: white; border-color: var(--secondary); }
     
-    /* Premium Card Grid */
-    .card-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2rem; }
+    /* --- Card Grid with CSS Animation --- */
+    .card-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.8rem; }
 
     .card {
-      background-color: var(--card-bg); border-radius: 16px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.06); overflow: hidden;
+      background-color: var(--card-bg); border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.04); overflow: hidden;
       display: flex; flex-direction: column; justify-content: space-between;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
       border: 1px solid var(--border-color);
+      /* This connects to the JS delay for the cascading effect */
+      animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
     }
-    .card:hover { transform: translateY(-6px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); }
     
-    .card-img { width: 100%; height: 240px; object-fit: cover; background-color: #eee; }
+    @keyframes slideUpFade {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    .card-img { width: 100%; height: 220px; object-fit: cover; background-color: #f0f0f0; }
     
     .card-content { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; }
     
     .tag {
-      display: inline-block; background-color: var(--tag-bg); color: var(--tag-text);
-      padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.75rem; font-weight: 700;
-      margin-bottom: 1rem; align-self: flex-start; text-transform: uppercase; letter-spacing: 0.5px;
+      display: inline-block; padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.75rem; 
+      font-weight: 800; margin-bottom: 1rem; align-self: flex-start; text-transform: uppercase; letter-spacing: 0.5px;
     }
 
-    /* Color coding the days */
     .day-1 { background-color: #FFE5EC; color: #D81159; }
     .day-2 { background-color: #E0F4FF; color: #0077B6; }
     .day-3 { background-color: #E8F5E9; color: #2E7D32; }
     .day-4 { background-color: #F3E5F5; color: #7B1FA2; }
     .day-5 { background-color: #FFF3E0; color: #E65100; }
+    .tag-default { background-color: #F1F1F1; color: #222222; }
 
-    .card h3 { margin: 0 0 0.4rem 0; color: var(--text-main); font-size: 1.4rem; font-weight: 700; }
+    .card h3 { margin: 0 0 0.4rem 0; color: var(--text-main); font-size: 1.35rem; font-weight: 800; }
     
-    /* NEW: Star Rating Styling */
     .rating-container { display: flex; align-items: center; margin-bottom: 1rem; font-size: 0.95rem; }
-    .star { color: #FF385C; margin-right: 4px; font-weight: 700;}
+    .star { color: var(--primary); margin-right: 4px; font-weight: 800;}
     .review-count { color: var(--text-muted); margin-left: 6px; font-size: 0.9rem; }
 
-    .card p { margin: 0 0 1.5rem 0; color: var(--text-muted); line-height: 1.6; font-size: 1rem; flex-grow: 1; }
+    .card p { margin: 0 0 1.5rem 0; color: var(--text-muted); line-height: 1.6; font-size: 0.95rem; flex-grow: 1; }
 
-    /* Interactive Reschedule Box */
     .reschedule-box {
-      background: #F7F7F9; padding: 0.8rem 1rem; border-radius: 12px;
+      background: var(--bg-color); padding: 0.8rem 1rem; border-radius: 12px;
       margin-bottom: 1.2rem; display: flex; align-items: center; justify-content: space-between;
       border: 1px solid var(--border-color);
     }
-    .reschedule-box span { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); }
+    .reschedule-box span { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); }
     .reschedule-box select {
-      padding: 0.5rem 0.8rem; border-radius: 8px; border: 1px solid #ddd;
-      font-weight: 600; color: var(--text-main); cursor: pointer; background: white;
+      padding: 0.4rem 0.6rem; border-radius: 8px; border: 1px solid #ddd; outline: none;
+      font-weight: 700; color: var(--text-main); cursor: pointer; background: white;
     }
 
-    /* Upgraded Button */
     .map-btn {
-      display: inline-block; width: 100%; text-align: center;
-      background-color: var(--primary); color: white;
-      padding: 1rem; border-radius: 12px; text-decoration: none;
-      font-weight: 600; font-size: 1rem; transition: background 0.2s; margin-top: auto;
+      display: block; width: 100%; text-align: center; background-color: var(--card-bg); 
+      color: var(--text-main); padding: 1rem; border-radius: 12px; text-decoration: none;
+      font-weight: 700; font-size: 1rem; border: 2px solid var(--text-main);
+      transition: all 0.2s ease; margin-top: auto;
     }
-    .map-btn:hover { background-color: #E61E4D; }
+    .map-btn:active { transform: scale(0.98); }
   </style>
 </head>
 <body>
 
-  <header>🇪🇸 BarnaGo</header>
+  <header>
+    <div class="logo">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+        <circle cx="12" cy="10" r="3"></circle>
+      </svg>
+      BarnaGo
+    </div>
+  </header>
 
   <nav>
     <button class="active" onclick="switchTab('route', this)">🗺️ Route</button>
@@ -159,40 +172,24 @@
   </main>
 
   <script>
-    // --- DATABASE WITH RATINGS, REVIEWS & NEW UI DATA ---
+    // --- FULL DATABASE ---
     const DATA = {
       route: [
-        /* DAY 1 */
-        { id: "r1", day: 1, title: "Sagrada Família", desc: "Start your trip with Gaudí's breathtaking basilica before the crowds arrive.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Sagrada_Familia_01.jpg/640px-Sagrada_Familia_01.jpg", map: "Sagrada+Familia,+Barcelona", rating: "4.8", reviews: "193k" },
-        { id: "r2", day: 1, title: "Hospital de Sant Pau", desc: "Walk 15 mins to see this massive, stunning Art Nouveau hospital complex.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Hospital_de_Sant_Pau_-_Barcelona.jpg/640px-Hospital_de_Sant_Pau_-_Barcelona.jpg", map: "Hospital+de+Sant+Pau,+Barcelona", rating: "4.7", reviews: "21k" },
-        { id: "r3", day: 1, title: "Casa Milà (La Pedrera)", desc: "Head down to Passeig de Gràcia to see Gaudí's undulating stone apartment building.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Casa_Mil%C3%A0_%28Barcelona%29_-_30.jpg/640px-Casa_Mil%C3%A0_%28Barcelona%29_-_30.jpg", map: "Casa+Mila,+Barcelona", rating: "4.6", reviews: "65k" },
-        { id: "r4", day: 1, title: "Casa Batlló", desc: "Walk a few blocks further to explore the 'Bone House' with its colorful dragon-scale roof.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Casa_Batll%C3%B3_Barcelona_Spain.jpg/640px-Casa_Batll%C3%B3_Barcelona_Spain.jpg", map: "Casa+Batllo,+Barcelona", rating: "4.7", reviews: "98k" },
-        { id: "r5", day: 1, title: "Plaça de Catalunya", desc: "End your day walking into the bustling heart of the city.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Pla%C3%A7a_de_Catalunya.jpg/640px-Pla%C3%A7a_de_Catalunya.jpg", map: "Placa+de+Catalunya,+Barcelona", rating: "4.5", reviews: "102k" },
-
-        /* DAY 2 */
-        { id: "r6", day: 2, title: "Palau de la Música", desc: "Start with a morning tour of this breathtaking, colorful modernist concert hall.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Palau_de_la_M%C3%BAsica_Catalana_-_Sala_de_Concerts_01.jpg/640px-Palau_de_la_M%C3%BAsica_Catalana_-_Sala_de_Concerts_01.jpg", map: "Palau+de+la+Musica+Catalana,+Barcelona", rating: "4.8", reviews: "38k" },
-        { id: "r7", day: 2, title: "Barcelona Cathedral", desc: "Walk into the Gothic Quarter to see this massive Gothic cathedral.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Cathedral_of_Barcelona_-_01.jpg/640px-Cathedral_of_Barcelona_-_01.jpg", map: "Barcelona+Cathedral", rating: "4.6", reviews: "52k" },
-        { id: "r8", day: 2, title: "Plaça del Rei", desc: "Visit the MUHBA museum to literally walk underground through the excavated Roman ruins.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Pla%C3%A7a_del_Rei_Barcelona_01.jpg/640px-Pla%C3%A7a_del_Rei_Barcelona_01.jpg", map: "Placa+del+Rei,+Barcelona", rating: "4.5", reviews: "11k" },
-        { id: "r9", day: 2, title: "Picasso Museum", desc: "Cross into the trendy El Born neighborhood to see Picasso's formative early works.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Museu_Picasso_-_pati.JPG/640px-Museu_Picasso_-_pati.JPG", map: "Picasso+Museum,+Barcelona", rating: "4.3", reviews: "45k" },
-        { id: "r10", day: 2, title: "Ciutadella Park", desc: "Relax your legs by the monumental waterfall and the Arc de Triomf.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Parc_de_la_Ciutadella_-_Cascada_-_01.jpg/640px-Parc_de_la_Ciutadella_-_Cascada_-_01.jpg", map: "Parc+de+la+Ciutadella,+Barcelona", rating: "4.6", reviews: "75k" },
-
-        /* DAY 3 */
-        { id: "r11", day: 3, title: "Montjuïc Castle", desc: "Take the cable car up Montjuïc hill for 360-degree panoramic views.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Castillo_de_Montjuic.jpg/640px-Castillo_de_Montjuic.jpg", map: "Montjuic+Castle,+Barcelona", rating: "4.4", reviews: "32k" },
-        { id: "r12", day: 3, title: "Poble Espanyol", desc: "Right down the hill, visit this open-air architectural museum.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Poble_Espanyol_-_Pla%C3%A7a_Aragonesa.jpg/640px-Poble_Espanyol_-_Pla%C3%A7a_Aragonesa.jpg", map: "Poble+Espanyol,+Barcelona", rating: "4.2", reviews: "25k" },
-        { id: "r13", day: 3, title: "MNAC Art Museum", desc: "Walk over to the spectacular National Art Museum overlooking Plaça d'Espanya.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Museu_Nacional_d%27Art_de_Catalunya_%28MNAC%29.jpg/640px-Museu_Nacional_d%27Art_de_Catalunya_%28MNAC%29.jpg", map: "MNAC,+Barcelona", rating: "4.7", reviews: "28k" },
-        { id: "r14", day: 3, title: "Port Vell Harbor", desc: "Take public transit down to the water and watch the boats.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Port_Vell_Barcelona.jpg/640px-Port_Vell_Barcelona.jpg", map: "Port+Vell,+Barcelona", rating: "4.5", reviews: "41k" },
-        { id: "r15", day: 3, title: "Barceloneta Beach", desc: "Walk the lively beach promenade. Grab dinner by the sea.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Barceloneta_Beach%2C_Barcelona.jpg/640px-Barceloneta_Beach%2C_Barcelona.jpg", map: "Barceloneta+Beach,+Barcelona", rating: "4.3", reviews: "50k" },
-
-        /* DAY 4 */
-        { id: "r16", day: 4, title: "Park Güell", desc: "Book an early morning slot to explore Gaudí's whimsical, mosaic-covered park.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Park_G%C3%BCell_%28Barcelona%29_-_55.jpg/640px-Park_G%C3%BCell_%28Barcelona%29_-_55.jpg", map: "Park+Guell,+Barcelona", rating: "4.5", reviews: "145k" },
-        { id: "r17", day: 4, title: "Casa Vicens", desc: "Head down into the Gràcia neighborhood to see Gaudí's very first house.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Casa_Vicens.jpg/640px-Casa_Vicens.jpg", map: "Casa+Vicens,+Barcelona", rating: "4.5", reviews: "12k" },
-        { id: "r18", day: 4, title: "Lunch in Gràcia", desc: "Wander through Plaça del Sol. It feels like a small village inside the big city.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Pla%C3%A7a_del_Sol_%28Vila_de_Gr%C3%A0cia%29.jpg/640px-Pla%C3%A7a_del_Sol_%28Vila_de_Gr%C3%A0cia%29.jpg", map: "Placa+del+Sol,+Barcelona", rating: "4.6", reviews: "5k" },
-        { id: "r19", day: 4, title: "Mercat de la Boqueria", desc: "Take the metro to Las Ramblas to experience this massive food market.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Mercat_de_la_Boqueria_-_Barcelona.jpg/640px-Mercat_de_la_Boqueria_-_Barcelona.jpg", map: "Mercado+de+La+Boqueria,+Barcelona", rating: "4.5", reviews: "115k" },
-        { id: "r20", day: 4, title: "Palau Güell", desc: "Just off Las Ramblas, see this darker, moodier, early mansion designed by Gaudí.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Palau_G%C3%BCell_-_Fa%C3%A7ana.jpg/640px-Palau_G%C3%BCell_-_Fa%C3%A7ana.jpg", map: "Palau+Guell,+Barcelona", rating: "4.5", reviews: "19k" },
-
-        /* DAY 5 */
-        { id: "r21", day: 5, title: "Drive to Montserrat", desc: "Hit the road! Drive 1 hour inland to the serrated mountains.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Montserrat_monastery.jpg/640px-Montserrat_monastery.jpg", map: "Santa+Maria+de+Montserrat+Abbey", rating: "4.8", reviews: "42k" },
-        { id: "r22", day: 5, title: "Penedès Wine Region", desc: "Drive through Penedès. Stop at a vineyard to see how Spanish Cava is made.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Vinyes_del_Pened%C3%A8s.jpg/640px-Vinyes_del_Pened%C3%A8s.jpg", map: "Vilafranca+del+Penedes,+Spain", rating: "4.7", reviews: "8k" },
+        { id: "r1", day: 1, title: "Sagrada Família", desc: "Start your trip with Gaudí's breathtaking basilica.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Sagrada_Familia_01.jpg/640px-Sagrada_Familia_01.jpg", map: "Sagrada+Familia,+Barcelona", rating: "4.8", reviews: "193k" },
+        { id: "r2", day: 1, title: "Hospital de Sant Pau", desc: "Walk 15 mins to see this stunning Art Nouveau complex.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Hospital_de_Sant_Pau_-_Barcelona.jpg/640px-Hospital_de_Sant_Pau_-_Barcelona.jpg", map: "Hospital+de+Sant+Pau", rating: "4.7", reviews: "21k" },
+        { id: "r3", day: 1, title: "Casa Milà (La Pedrera)", desc: "Head down to Passeig de Gràcia to see Gaudí's stone building.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Casa_Mil%C3%A0_%28Barcelona%29_-_30.jpg/640px-Casa_Mil%C3%A0_%28Barcelona%29_-_30.jpg", map: "Casa+Mila,+Barcelona", rating: "4.6", reviews: "65k" },
+        { id: "r4", day: 1, title: "Casa Batlló", desc: "Explore the 'Bone House' with its colorful dragon-scale roof.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Casa_Batll%C3%B3_Barcelona_Spain.jpg/640px-Casa_Batll%C3%B3_Barcelona_Spain.jpg", map: "Casa+Batllo", rating: "4.7", reviews: "98k" },
+        { id: "r6", day: 2, title: "Palau de la Música", desc: "Start with a tour of this colorful modernist concert hall.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Palau_de_la_M%C3%BAsica_Catalana_-_Sala_de_Concerts_01.jpg/640px-Palau_de_la_M%C3%BAsica_Catalana_-_Sala_de_Concerts_01.jpg", map: "Palau+de+la+Musica+Catalana", rating: "4.8", reviews: "38k" },
+        { id: "r7", day: 2, title: "Barcelona Cathedral", desc: "Walk into the Gothic Quarter to see this massive cathedral.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Cathedral_of_Barcelona_-_01.jpg/640px-Cathedral_of_Barcelona_-_01.jpg", map: "Barcelona+Cathedral", rating: "4.6", reviews: "52k" },
+        { id: "r9", day: 2, title: "Picasso Museum", desc: "Cross into El Born neighborhood to see Picasso's early works.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Museu_Picasso_-_pati.JPG/640px-Museu_Picasso_-_pati.JPG", map: "Picasso+Museum", rating: "4.3", reviews: "45k" },
+        { id: "r10", day: 2, title: "Ciutadella Park", desc: "Relax by the monumental waterfall and the Arc de Triomf.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Parc_de_la_Ciutadella_-_Cascada_-_01.jpg/640px-Parc_de_la_Ciutadella_-_Cascada_-_01.jpg", map: "Parc+de+la+Ciutadella", rating: "4.6", reviews: "75k" },
+        { id: "r11", day: 3, title: "Montjuïc Castle", desc: "Take the cable car up the hill for 360-degree views.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Castillo_de_Montjuic.jpg/640px-Castillo_de_Montjuic.jpg", map: "Montjuic+Castle", rating: "4.4", reviews: "32k" },
+        { id: "r13", day: 3, title: "MNAC Art Museum", desc: "Walk over to the spectacular National Art Museum.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Museu_Nacional_d%27Art_de_Catalunya_%28MNAC%29.jpg/640px-Museu_Nacional_d%27Art_de_Catalunya_%28MNAC%29.jpg", map: "MNAC,+Barcelona", rating: "4.7", reviews: "28k" },
+        { id: "r15", day: 3, title: "Barceloneta Beach", desc: "Walk the lively beach promenade. Grab dinner by the sea.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Barceloneta_Beach%2C_Barcelona.jpg/640px-Barceloneta_Beach%2C_Barcelona.jpg", map: "Barceloneta+Beach", rating: "4.3", reviews: "50k" },
+        { id: "r16", day: 4, title: "Park Güell", desc: "Explore Gaudí's whimsical, mosaic-covered park.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Park_G%C3%BCell_%28Barcelona%29_-_55.jpg/640px-Park_G%C3%BCell_%28Barcelona%29_-_55.jpg", map: "Park+Guell", rating: "4.5", reviews: "145k" },
+        { id: "r18", day: 4, title: "Lunch in Gràcia", desc: "Wander through Plaça del Sol for a village feel.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Pla%C3%A7a_del_Sol_%28Vila_de_Gr%C3%A0cia%29.jpg/640px-Pla%C3%A7a_del_Sol_%28Vila_de_Gr%C3%A0cia%29.jpg", map: "Placa+del+Sol", rating: "4.6", reviews: "5k" },
+        { id: "r19", day: 4, title: "Mercat de la Boqueria", desc: "Experience this massive, vibrant food market.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Mercat_de_la_Boqueria_-_Barcelona.jpg/640px-Mercat_de_la_Boqueria_-_Barcelona.jpg", map: "Mercado+de+La+Boqueria", rating: "4.5", reviews: "115k" },
+        { id: "r21", day: 5, title: "Drive to Montserrat", desc: "Drive 1 hour inland to the serrated mountains.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Montserrat_monastery.jpg/640px-Montserrat_monastery.jpg", map: "Montserrat+Abbey", rating: "4.8", reviews: "42k" },
         { id: "r23", day: 5, title: "Sitges Coastline", desc: "End your road trip in the beautiful coastal town of Sitges.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Sitges_-_Esgl%C3%A9sia_de_Sant_Bartomeu_i_Santa_Tecla.jpg/640px-Sitges_-_Esgl%C3%A9sia_de_Sant_Bartomeu_i_Santa_Tecla.jpg", map: "Sitges,+Spain", rating: "4.6", reviews: "22k" }
       ],
       sights: [
@@ -201,69 +198,53 @@
         { tag: "History", title: "Gothic Quarter", desc: "Medieval heart of the city.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Pont_del_Bisbe_en_el_Barrio_G%C3%B3tico.jpg/640px-Pont_del_Bisbe_en_el_Barrio_G%C3%B3tico.jpg", map: "Gothic+Quarter,+Barcelona", rating: "4.7", reviews: "88k" }
       ],
       roadtrips: [
-        { tag: "Mountains", title: "Montserrat Monastery", desc: "1hr drive. Stunning abbey built high into serrated mountain peaks.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Montserrat_monastery.jpg/640px-Montserrat_monastery.jpg", map: "Santa+Maria+de+Montserrat+Abbey", rating: "4.8", reviews: "42k" },
-        { tag: "Coastal Town", title: "Sitges", desc: "45-min drive south. Beautiful coastal town known for its beaches.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Sitges_-_Esgl%C3%A9sia_de_Sant_Bartomeu_i_Santa_Tecla.jpg/640px-Sitges_-_Esgl%C3%A9sia_de_Sant_Bartomeu_i_Santa_Tecla.jpg", map: "Sitges,+Spain", rating: "4.6", reviews: "22k" },
-        { tag: "Medieval City", title: "Girona", desc: "1.5hr drive north. Preserved medieval city with colorful river houses.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Girona_Onyar.jpg/640px-Girona_Onyar.jpg", map: "Girona,+Spain", rating: "4.7", reviews: "35k" }
+        { tag: "Mountains", title: "Montserrat Monastery", desc: "1hr drive. Stunning abbey built high into serrated mountain peaks.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Montserrat_monastery.jpg/640px-Montserrat_monastery.jpg", map: "Montserrat+Abbey", rating: "4.8", reviews: "42k" },
+        { tag: "Coast", title: "Sitges", desc: "45-min drive south. Beautiful coastal town known for its beaches.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Sitges_-_Esgl%C3%A9sia_de_Sant_Bartomeu_i_Santa_Tecla.jpg/640px-Sitges_-_Esgl%C3%A9sia_de_Sant_Bartomeu_i_Santa_Tecla.jpg", map: "Sitges,+Spain", rating: "4.6", reviews: "22k" },
+        { tag: "Medieval", title: "Girona", desc: "1.5hr drive north. Preserved medieval city with colorful river houses.", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Girona_Onyar.jpg/640px-Girona_Onyar.jpg", map: "Girona,+Spain", rating: "4.7", reviews: "35k" }
       ],
       food: [
-        /* TAPAS */
-        { category: "Tapas", tag: "Tapas", title: "Ciudad Condal", desc: "Classic tapas bar with an incredible display of fresh food.", img: "https://images.unsplash.com/photo-1541535881962-3bb380b08458?w=640", map: "Ciutat+Comtal,+Barcelona", rating: "4.5", reviews: "16.2k" },
-        /* PIZZA */
-        { category: "Pizza", tag: "Pizza", title: "Sartoria Panatieri", desc: "Voted one of the best pizzerias in Europe! Organic ingredients.", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=640", map: "Sartoria+Panatieri,+Barcelona", rating: "4.6", reviews: "2.1k" },
-        /* VEGETARIAN */
-        { category: "Vegetarian", tag: "Veg", title: "Teresa Carles", desc: "Legendary vegetarian spot. Amazing plant-based tapas.", img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=640", map: "Teresa+Carles,+Barcelona", rating: "4.4", reviews: "8.5k" },
-        /* INDIAN */
-        { category: "Indian", tag: "Upscale", title: "Bembi", desc: "Upscale, highly-rated authentic Indian cuisine in the Eixample district. Perfect for a nice dinner.", img: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=640", map: "Bembi,+Barcelona", rating: "4.5", reviews: "2.8k" },
-        { category: "Indian", tag: "Street Food", title: "Surya", desc: "Vibrant and incredibly fun spot for authentic Indian street food and rich curries.", img: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=640", map: "Surya+Pau+Claris,+Barcelona", rating: "4.2", reviews: "1.9k" },
-        { category: "Indian", tag: "Home-style", title: "Swad", desc: "A hidden gem in Poblenou famous for absolutely delicious, home-style traditional curries.", img: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=640", map: "Swad,+Barcelona", rating: "4.7", reviews: "950" },
-        /* ASIAN */
-        { category: "Asian", tag: "Sushi", title: "Roots & Rolls", desc: "Incredible plant-based sushi and Asian-fusion tapas.", img: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=640", map: "Roots+and+Rolls,+Barcelona", rating: "4.6", reviews: "1.4k" }
+        { category: "Tapas", tag: "Tapas", title: "Ciudad Condal", desc: "Classic tapas bar with an incredible display of fresh food.", img: "https://images.unsplash.com/photo-1541535881962-3bb380b08458?w=640", map: "Ciutat+Comtal", rating: "4.5", reviews: "16.2k" },
+        { category: "Pizza", tag: "Pizza", title: "Sartoria Panatieri", desc: "Voted one of the best pizzerias in Europe! Organic ingredients.", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=640", map: "Sartoria+Panatieri", rating: "4.6", reviews: "2.1k" },
+        { category: "Vegetarian", tag: "Veg", title: "Teresa Carles", desc: "Legendary vegetarian spot. Amazing plant-based tapas.", img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=640", map: "Teresa+Carles", rating: "4.4", reviews: "8.5k" },
+        { category: "Indian", tag: "Upscale", title: "Bembi", desc: "Upscale, highly-rated authentic Indian cuisine. Perfect for dinner.", img: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=640", map: "Bembi,+Barcelona", rating: "4.5", reviews: "2.8k" },
+        { category: "Indian", tag: "Street Food", title: "Surya", desc: "Vibrant and incredibly fun spot for authentic Indian street food.", img: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=640", map: "Surya+Pau+Claris", rating: "4.2", reviews: "1.9k" },
+        { category: "Asian", tag: "Sushi", title: "Roots & Rolls", desc: "Incredible plant-based sushi and Asian-fusion tapas.", img: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=640", map: "Roots+and+Rolls", rating: "4.6", reviews: "1.4k" }
       ]
     };
 
     const contentDiv = document.getElementById('app-content');
     const filterBar = document.getElementById('filter-bar');
 
-    // Generate the Rating HTML snippet
     function getRatingHTML(rating, reviews) {
       if (!rating) return '';
-      return `
-        <div class="rating-container">
-          <span class="star">★</span>
-          <strong>${rating}</strong>
-          <span class="review-count">(${reviews} reviews)</span>
-        </div>
-      `;
+      return `<div class="rating-container"><span class="star">★</span><strong>${rating}</strong><span class="review-count">(${reviews})</span></div>`;
     }
 
-    // Function to move an item to a different day
     function moveRouteItem(itemId, newDay) {
       const itemIndex = DATA.route.findIndex(i => i.id === itemId);
-      if (itemIndex > -1) {
-        DATA.route[itemIndex].day = parseInt(newDay);
-        renderRouteTab();
-      }
+      if (itemIndex > -1) { DATA.route[itemIndex].day = parseInt(newDay); renderRouteTab(); }
     }
 
-    // Custom renderer just for the Route tab to handle dynamic Days and Stop Numbers
     function renderRouteTab() {
       let html = '';
+      let globalIndex = 0; // Used for animation delay staggering
+      
       for (let d = 1; d <= 5; d++) {
         const dayItems = DATA.route.filter(item => item.day === d);
         dayItems.forEach((item, index) => {
           const mapsUrl = `http://googleusercontent.com/maps.google.com/search?q=${item.map}`;
           const tagClass = `day-${item.day}`;
-          const stopText = `Day ${item.day} - Stop ${index + 1}`;
+          // Dynamic inline style for staggered cascading animation
+          const delay = globalIndex * 0.05; 
           
           html += `
-            <div class="card">
+            <div class="card" style="animation-delay: ${delay}s">
               <img src="${item.img}" alt="${item.title}" class="card-img" onerror="this.onerror=null;this.src='https://placehold.co/600x400?text=${item.title.replace(/ /g, '+')}';">
               <div class="card-content">
-                <span class="tag ${tagClass}">${stopText}</span>
+                <span class="tag ${tagClass}">Day ${item.day} - Stop ${index + 1}</span>
                 <h3>${item.title}</h3>
                 ${getRatingHTML(item.rating, item.reviews)}
                 <p>${item.desc}</p>
-                
                 <div class="reschedule-box">
                   <span>🗓️ Move day:</span>
                   <select onchange="moveRouteItem('${item.id}', this.value)">
@@ -274,24 +255,24 @@
                     <option value="5" ${item.day == 5 ? 'selected' : ''}>Day 5</option>
                   </select>
                 </div>
-
                 <a href="${mapsUrl}" target="_blank" class="map-btn">Get Directions</a>
               </div>
-            </div>
-          `;
+            </div>`;
+          globalIndex++;
         });
       }
       contentDiv.innerHTML = html;
     }
 
-    // Standard renderer for Sights, Trips, and Food
     function renderList(dataArray) {
       let html = '';
-      dataArray.forEach(item => {
+      dataArray.forEach((item, index) => {
         const mapsUrl = `http://googleusercontent.com/maps.google.com/search?q=${item.map}`;
-        const tagClass = item.tagClass ? item.tagClass : '';
+        const tagClass = item.tagClass ? item.tagClass : 'tag-default';
+        const delay = index * 0.05; // Stagger effect
+        
         html += `
-          <div class="card">
+          <div class="card" style="animation-delay: ${delay}s">
             <img src="${item.img}" alt="${item.title}" class="card-img" onerror="this.onerror=null;this.src='https://placehold.co/600x400?text=${item.title.replace(/ /g, '+')}';">
             <div class="card-content">
               <span class="tag ${tagClass}">${item.tag}</span>
@@ -300,43 +281,31 @@
               <p>${item.desc}</p>
               <a href="${mapsUrl}" target="_blank" class="map-btn">Get Directions</a>
             </div>
-          </div>
-        `;
+          </div>`;
       });
       contentDiv.innerHTML = html;
     }
 
-    // Navigation Logic
     function switchTab(tabId, buttonElement) {
-      const buttons = document.querySelectorAll('nav button');
-      buttons.forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
       buttonElement.classList.add('active');
 
       if (tabId === 'food') {
         filterBar.style.display = 'block';
-        const allBtn = filterBar.querySelector('button');
-        filterFood('All', allBtn); 
+        filterFood('All', filterBar.querySelector('button')); 
       } else {
         filterBar.style.display = 'none';
         if (tabId === 'route') { renderRouteTab(); } else { renderList(DATA[tabId]); }
       }
     }
 
-    // Food Filter Logic
     function filterFood(category, buttonElement) {
-      const filterBtns = document.querySelectorAll('.filter-btn');
-      filterBtns.forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
       buttonElement.classList.add('active');
-
-      if (category === 'All') {
-        renderList(DATA.food);
-      } else {
-        const filteredData = DATA.food.filter(item => item.category === category);
-        renderList(filteredData);
-      }
+      renderList(category === 'All' ? DATA.food : DATA.food.filter(item => item.category === category));
     }
 
-    // Load initial route tab on startup
+    // Initialize
     switchTab('route', document.querySelector('nav button'));
   </script>
 </body>
