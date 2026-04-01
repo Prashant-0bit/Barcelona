@@ -31,7 +31,7 @@
     .logo-icon { flex-shrink: 0; }
     .logo-text { font-size: 1.8rem; font-weight: 800; letter-spacing: -0.5px; }
     
-    #weather-banner { font-size: 0.85rem; font-weight: 600; margin-top: 8px; opacity: 0.9; background: rgba(0,0,0,0.15); padding: 4px 12px; border-radius: 20px; transition: opacity 0.3s; }
+    #weather-banner { font-size: 0.8rem; font-weight: 600; margin-top: 8px; opacity: 0.95; background: rgba(0,0,0,0.2); padding: 6px 14px; border-radius: 20px; transition: opacity 0.3s; display: flex; align-items: center; gap: 6px; letter-spacing: 0.3px;}
 
     nav { display: flex; overflow-x: auto; white-space: nowrap; background-color: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(235, 235, 235, 0.5); position: sticky; top: 82px; z-index: 100; scrollbar-width: none; }
     nav::-webkit-scrollbar { display: none; }
@@ -86,7 +86,6 @@
     #detail-view.active { transform: translateX(0); }
     .detail-hero { width: 100%; height: 40vh; background-size: cover; background-position: center; position: relative; }
     
-    /* THE FIX: Added high z-index and safe-area top padding so it never hides under the notch */
     .back-btn { position: absolute; top: max(20px, env(safe-area-inset-top)); left: 20px; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); border: none; padding: 12px 20px; border-radius: 50px; font-weight: 700; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 8px; z-index: 100; }
     
     .detail-body { background: var(--card-bg); border-radius: 30px 30px 0 0; margin-top: -30px; padding: 2rem 1.5rem; flex-grow: 1; display: flex; flex-direction: column; position: relative; }
@@ -178,9 +177,13 @@
 
       const fetchBarcelonaWeather = async () => {
         try {
-          const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${bcnLat}&longitude=${bcnLon}&current_weather=true`);
+          const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${bcnLat}&longitude=${bcnLon}&current=temperature_2m,apparent_temperature,wind_speed_10m`);
           const data = await res.json();
-          weatherBanner.innerText = `🌤️ Barcelona: ${data.current_weather.temperature}°C`;
+          const temp = Math.round(data.current.temperature_2m);
+          const feelsLike = Math.round(data.current.apparent_temperature);
+          const wind = Math.round(data.current.wind_speed_10m);
+          
+          weatherBanner.innerHTML = `🌤️ <strong>Barcelona:</strong> ${temp}°C (Feels ${feelsLike}°C) &nbsp;|&nbsp; 💨 ${wind} km/h`;
         } catch (e) {
           weatherBanner.style.display = 'none';
         }
@@ -197,9 +200,14 @@
 
             if (geoData.countryCode === 'ES') {
               const city = geoData.city || geoData.locality || "Spain";
-              const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${userLat}&longitude=${userLon}&current_weather=true`);
+              const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${userLat}&longitude=${userLon}&current=temperature_2m,apparent_temperature,wind_speed_10m`);
               const weatherData = await weatherRes.json();
-              weatherBanner.innerText = `🌤️ ${city}: ${weatherData.current_weather.temperature}°C`;
+              
+              const temp = Math.round(weatherData.current.temperature_2m);
+              const feelsLike = Math.round(weatherData.current.apparent_temperature);
+              const wind = Math.round(weatherData.current.wind_speed_10m);
+
+              weatherBanner.innerHTML = `🌤️ <strong>${city}:</strong> ${temp}°C (Feels ${feelsLike}°C) &nbsp;|&nbsp; 💨 ${wind} km/h`;
             } else {
               fetchBarcelonaWeather();
             }
@@ -233,55 +241,66 @@
     // --- FULL DATABASE ---
     const DATA = {
       route: [
-        { id: "r1", day: 1, title: "Sagrada Família", desc: "Start your trip with Gaudí's breathtaking basilica.", fullDesc: "The Basílica de la Sagrada Família is the largest unfinished Catholic church in the world. You must book tickets online weeks in advance.", cost: "€26 - €30", hours: "9:00 AM - 6:00 PM", img: img1, map: "Sagrada+Familia,+Barcelona", rating: "4.8", reviews: "193k" },
-        { id: "r2", day: 1, title: "Hospital de Sant Pau", desc: "Walk 15 mins to see this stunning Art Nouveau complex.", fullDesc: "The Recinte Modernista de Sant Pau is the world’s largest Art Nouveau complex. Formerly a fully functioning hospital, it is now an architectural marvel open to the public.", cost: "€16 Entry", hours: "10:00 AM - 5:00 PM", img: img2, map: "Hospital+de+Sant+Pau,+Barcelona", rating: "4.7", reviews: "21k" },
-        { id: "r3", day: 1, title: "Casa Milà (La Pedrera)", desc: "Head to Passeig de Gràcia to see Gaudí's stone building.", fullDesc: "Casa Milà, popularly known as La Pedrera, is one of Gaudí’s most iconic works of civic architecture. Its undulating stone facade and surreal rooftop chimneys are a must-see.", cost: "€25 - €28", hours: "9:00 AM - 8:30 PM", img: img3, map: "Casa+Mila,+Barcelona", rating: "4.6", reviews: "65k" },
-        { id: "r4", day: 1, title: "Casa Batlló", desc: "Explore the 'Bone House' with its colorful dragon-scale roof.", fullDesc: "Locally known as the House of Bones due to its skeletal organic design, Casa Batlló is considered one of Gaudí's masterpieces. The audio guide is highly recommended.", cost: "€35 (Book ahead)", hours: "9:00 AM - 8:00 PM", img: img2, map: "Casa+Batllo,+Barcelona", rating: "4.7", reviews: "98k" },
+        { id: "r1", day: 1, title: "Sagrada Família", desc: "Start your trip with Gaudí's breathtaking basilica.", fullDesc: "The Basílica de la Sagrada Família is the largest unfinished Catholic church in the world. You must book tickets online weeks in advance.", cost: "€26 - €30", hours: "9:00 AM - 6:00 PM", img: img1, map: "Sagrada Família, Barcelona", rating: "4.8", reviews: "193k" },
+        { id: "r2", day: 1, title: "Hospital de Sant Pau", desc: "Walk 15 mins to see this stunning Art Nouveau complex.", fullDesc: "The Recinte Modernista de Sant Pau is the world’s largest Art Nouveau complex. Formerly a fully functioning hospital, it is now an architectural marvel open to the public.", cost: "€16 Entry", hours: "10:00 AM - 5:00 PM", img: img2, map: "Hospital de Sant Pau, Barcelona", rating: "4.7", reviews: "21k" },
+        { id: "r3", day: 1, title: "Casa Milà (La Pedrera)", desc: "Head to Passeig de Gràcia to see Gaudí's stone building.", fullDesc: "Casa Milà, popularly known as La Pedrera, is one of Gaudí’s most iconic works of civic architecture. Its undulating stone facade and surreal rooftop chimneys are a must-see.", cost: "€25 - €28", hours: "9:00 AM - 8:30 PM", img: img3, map: "Casa Milà, Barcelona", rating: "4.6", reviews: "65k" },
+        { id: "r4", day: 1, title: "Casa Batlló", desc: "Explore the 'Bone House' with its colorful dragon-scale roof.", fullDesc: "Locally known as the House of Bones due to its skeletal organic design, Casa Batlló is considered one of Gaudí's masterpieces. The audio guide is highly recommended.", cost: "€35 (Book ahead)", hours: "9:00 AM - 8:00 PM", img: img2, map: "Casa Batlló, Barcelona", rating: "4.7", reviews: "98k" },
         
-        { id: "r6", day: 2, title: "Palau de la Música", desc: "Tour this colorful modernist concert hall.", fullDesc: "This concert hall is an architectural jewel of Catalan Art Nouveau. The stunning stained-glass inverted dome skylight is the centerpiece of the building.", cost: "€18 Guided Tour", hours: "10:00 AM - 3:30 PM", img: img2, map: "Palau+de+la+Musica+Catalana,+Barcelona", rating: "4.8", reviews: "38k" },
-        { id: "r7", day: 2, title: "Barcelona Cathedral", desc: "Walk into the Gothic Quarter to see this massive cathedral.", fullDesc: "The Cathedral of the Holy Cross and Saint Eulalia is a stunning Gothic cathedral constructed between the 13th to 15th centuries. Check out the cloister which keeps 13 white geese.", cost: "€9 (Tourist Entry)", hours: "9:30 AM - 6:30 PM", img: img4, map: "Barcelona+Cathedral", rating: "4.6", reviews: "52k" },
-        { id: "r9", day: 2, title: "Picasso Museum", desc: "Cross into El Born to see Picasso's early works.", fullDesc: "Housed in five adjoining medieval palaces, this museum contains over 4,000 works by the Spanish cubist. It offers an incredible look at his formative years.", cost: "€14", hours: "10:00 AM - 7:00 PM (Closed Mondays)", img: img4, map: "Picasso+Museum,+Barcelona", rating: "4.3", reviews: "45k" },
-        { id: "r10", day: 2, title: "Ciutadella Park", desc: "Relax by the monumental waterfall.", fullDesc: "Barcelona's 'green lung'. It features a beautiful boating lake, a massive monumental waterfall designed with the help of a young Gaudí, and lush gardens.", cost: "Free", hours: "10:00 AM - 10:30 PM", img: img6, map: "Parc+de+la+Ciutadella,+Barcelona", rating: "4.6", reviews: "75k" },
+        { id: "r6", day: 2, title: "Palau de la Música", desc: "Tour this colorful modernist concert hall.", fullDesc: "This concert hall is an architectural jewel of Catalan Art Nouveau. The stunning stained-glass inverted dome skylight is the centerpiece of the building.", cost: "€18 Guided Tour", hours: "10:00 AM - 3:30 PM", img: img2, map: "Palau de la Música Catalana, Barcelona", rating: "4.8", reviews: "38k" },
+        { id: "r7", day: 2, title: "Barcelona Cathedral", desc: "Walk into the Gothic Quarter to see this massive cathedral.", fullDesc: "The Cathedral of the Holy Cross and Saint Eulalia is a stunning Gothic cathedral constructed between the 13th to 15th centuries. Check out the cloister which keeps 13 white geese.", cost: "€9 (Tourist Entry)", hours: "9:30 AM - 6:30 PM", img: img4, map: "Barcelona Cathedral", rating: "4.6", reviews: "52k" },
+        { id: "r9", day: 2, title: "Picasso Museum", desc: "Cross into El Born to see Picasso's early works.", fullDesc: "Housed in five adjoining medieval palaces, this museum contains over 4,000 works by the Spanish cubist. It offers an incredible look at his formative years.", cost: "€14", hours: "10:00 AM - 7:00 PM (Closed Mondays)", img: img4, map: "Picasso Museum, Barcelona", rating: "4.3", reviews: "45k" },
+        { id: "r10", day: 2, title: "Ciutadella Park", desc: "Relax by the monumental waterfall.", fullDesc: "Barcelona's 'green lung'. It features a beautiful boating lake, a massive monumental waterfall designed with the help of a young Gaudí, and lush gardens.", cost: "Free", hours: "10:00 AM - 10:30 PM", img: img6, map: "Parc de la Ciutadella, Barcelona", rating: "4.6", reviews: "75k" },
         
-        { id: "r11", day: 3, title: "Montjuïc Castle", desc: "Take the cable car up the hill for 360-degree views.", fullDesc: "An old military fortress with roots dating back to 1640. It offers fantastic 360-degree panoramic views of the Barcelona harbor and city skyline.", cost: "€9 (Cable car extra)", hours: "10:00 AM - 8:00 PM", img: img4, map: "Montjuic+Castle,+Barcelona", rating: "4.4", reviews: "32k" },
-        { id: "r13", day: 3, title: "MNAC Art Museum", desc: "Walk over to the spectacular National Art Museum.", fullDesc: "The Museu Nacional d'Art de Catalunya is housed in a stunning palace and showcases a thousand years of Catalan art, from Romanesque murals to modern pieces.", cost: "€12", hours: "10:00 AM - 6:00 PM", img: img2, map: "MNAC,+Barcelona", rating: "4.7", reviews: "28k" },
-        { id: "r15", day: 3, title: "Barceloneta Beach", desc: "Walk the lively beach promenade. Grab dinner by the sea.", fullDesc: "The most famous beach in the city. Lined with chiringuitos (beach bars), seafood restaurants, and a bustling paved promenade perfect for a sunset stroll.", cost: "Free Public Beach", hours: "Open 24/7", img: img8, map: "Barceloneta+Beach,+Barcelona", rating: "4.3", reviews: "50k" },
+        { id: "r11", day: 3, title: "Montjuïc Castle", desc: "Take the cable car up the hill for 360-degree views.", fullDesc: "An old military fortress with roots dating back to 1640. It offers fantastic 360-degree panoramic views of the Barcelona harbor and city skyline.", cost: "€9 (Cable car extra)", hours: "10:00 AM - 8:00 PM", img: img4, map: "Montjuic Castle, Barcelona", rating: "4.4", reviews: "32k" },
+        { id: "r13", day: 3, title: "MNAC Art Museum", desc: "Walk over to the spectacular National Art Museum.", fullDesc: "The Museu Nacional d'Art de Catalunya is housed in a stunning palace and showcases a thousand years of Catalan art, from Romanesque murals to modern pieces.", cost: "€12", hours: "10:00 AM - 6:00 PM", img: img2, map: "MNAC, Barcelona", rating: "4.7", reviews: "28k" },
+        { id: "r15", day: 3, title: "Barceloneta Beach", desc: "Walk the lively beach promenade. Grab dinner by the sea.", fullDesc: "The most famous beach in the city. Lined with chiringuitos (beach bars), seafood restaurants, and a bustling paved promenade perfect for a sunset stroll.", cost: "Free Public Beach", hours: "Open 24/7", img: img8, map: "Barceloneta Beach, Barcelona", rating: "4.3", reviews: "50k" },
         
-        { id: "r16", day: 4, title: "Park Güell", desc: "Explore Gaudí's whimsical, mosaic-covered park.", fullDesc: "A whimsical public park system composed of gardens and architectonic elements. The famous Monumental Zone requires timed entry tickets.", cost: "€10 Entry", hours: "9:30 AM - 7:30 PM", img: img5, map: "Park+Guell,+Barcelona", rating: "4.5", reviews: "145k" },
-        { id: "r18", day: 4, title: "Lunch in Gràcia", desc: "Wander through Plaça del Sol for a village feel.", fullDesc: "Gràcia was an independent town until the late 19th century, and it still feels like it. It’s full of leafy plazas, independent boutiques, and great lunch spots.", cost: "Free to wander", hours: "Best around 1:00 PM - 4:00 PM", img: img4, map: "Placa+del+Sol,+Barcelona", rating: "4.6", reviews: "5k" },
-        { id: "r19", day: 4, title: "Mercat de la Boqueria", desc: "Experience this massive, vibrant food market.", fullDesc: "The most famous public market in Barcelona. Get lost amongst the hanging hams, fresh fruit smoothies, and incredible sit-down tapas bars hidden inside.", cost: "Free Entry", hours: "8:00 AM - 8:30 PM (Closed Sundays)", img: imgTapas, map: "Mercado+de+La+Boqueria,+Barcelona", rating: "4.5", reviews: "115k" },
+        { id: "r16", day: 4, title: "Park Güell", desc: "Explore Gaudí's whimsical, mosaic-covered park.", fullDesc: "A whimsical public park system composed of gardens and architectonic elements. The famous Monumental Zone requires timed entry tickets.", cost: "€10 Entry", hours: "9:30 AM - 7:30 PM", img: img5, map: "Park Guell, Barcelona", rating: "4.5", reviews: "145k" },
+        { id: "r18", day: 4, title: "Lunch in Gràcia", desc: "Wander through Plaça del Sol for a village feel.", fullDesc: "Gràcia was an independent town until the late 19th century, and it still feels like it. It’s full of leafy plazas, independent boutiques, and great lunch spots.", cost: "Free to wander", hours: "Best around 1:00 PM - 4:00 PM", img: img4, map: "Placa del Sol, Barcelona", rating: "4.6", reviews: "5k" },
+        { id: "r19", day: 4, title: "Mercat de la Boqueria", desc: "Experience this massive, vibrant food market.", fullDesc: "The most famous public market in Barcelona. Get lost amongst the hanging hams, fresh fruit smoothies, and incredible sit-down tapas bars hidden inside.", cost: "Free Entry", hours: "8:00 AM - 8:30 PM (Closed Sundays)", img: imgTapas, map: "Mercado de La Boqueria, Barcelona", rating: "4.5", reviews: "115k" },
         
-        { id: "r21", day: 5, title: "Montserrat Monastery", desc: "Drive 1 hour inland to the serrated mountains.", fullDesc: "A multi-peaked mountain range near Barcelona hosting the Benedictine abbey, Santa Maria de Montserrat. Incredible hiking trails and stunning views.", cost: "Free (Transport extra)", hours: "7:30 AM - 8:00 PM", img: img7, map: "Montserrat+Abbey,+Spain", rating: "4.8", reviews: "42k" },
-        { id: "r23", day: 5, title: "Sitges Coastline", desc: "End your road trip in the beautiful coastal town of Sitges.", fullDesc: "Known for its beautiful beaches, vibrant nightlife, and historical center, Sitges is a gorgeous whitewashed town just south of Barcelona.", cost: "Free to explore", hours: "Open 24/7", img: img8, map: "Sitges,+Spain", rating: "4.6", reviews: "22k" }
+        { id: "r21", day: 5, title: "Montserrat Monastery", desc: "Drive 1 hour inland to the serrated mountains.", fullDesc: "A multi-peaked mountain range near Barcelona hosting the Benedictine abbey, Santa Maria de Montserrat. Incredible hiking trails and stunning views.", cost: "Free (Transport extra)", hours: "7:30 AM - 8:00 PM", img: img7, map: "Montserrat Abbey, Spain", rating: "4.8", reviews: "42k" },
+        { id: "r23", day: 5, title: "Sitges Coastline", desc: "End your road trip in the beautiful coastal town of Sitges.", fullDesc: "Known for its beautiful beaches, vibrant nightlife, and historical center, Sitges is a gorgeous whitewashed town just south of Barcelona.", cost: "Free to explore", hours: "Open 24/7", img: img8, map: "Sitges, Spain", rating: "4.6", reviews: "22k" }
       ],
       sights: [
-        { id: "s1", tag: "Must See", title: "Sagrada Família", desc: "Gaudí's unfinished masterpiece.", fullDesc: "The Basílica de la Sagrada Família is the largest unfinished Catholic church in the world. Designed by Catalan architect Antoni Gaudí. You must book tickets online weeks in advance.", cost: "€26 - €30", hours: "9:00 AM - 6:00 PM", img: img1, map: "Sagrada+Familia,+Barcelona", rating: "4.8", reviews: "193k" },
-        { id: "s2", tag: "Must See", title: "Park Güell", desc: "Whimsical park with mosaic benches and views.", fullDesc: "A whimsical public park system composed of gardens and architectonic elements. The famous Monumental Zone requires timed entry tickets.", cost: "€10 Entry", hours: "9:30 AM - 7:30 PM", img: img5, map: "Park+Guell,+Barcelona", rating: "4.5", reviews: "145k" },
-        { id: "s3", tag: "History", title: "Gothic Quarter", desc: "Medieval heart of the city.", fullDesc: "The Barri Gòtic retains a labyrinthine street plan, with many small streets opening out into squares. Discover Roman ruins and medieval architecture.", cost: "Free", hours: "Open 24/7", img: img4, map: "Gothic+Quarter,+Barcelona", rating: "4.7", reviews: "88k" }
+        { id: "r1", tag: "Architecture", title: "Sagrada Família", desc: "Start your trip with Gaudí's breathtaking basilica.", fullDesc: "The Basílica de la Sagrada Família is the largest unfinished Catholic church in the world. You must book tickets online weeks in advance.", cost: "€26 - €30", hours: "9:00 AM - 6:00 PM", img: img1, map: "Sagrada Família, Barcelona", rating: "4.8", reviews: "193k" },
+        { id: "r2", tag: "Architecture", title: "Hospital de Sant Pau", desc: "Walk 15 mins to see this stunning Art Nouveau complex.", fullDesc: "The Recinte Modernista de Sant Pau is the world’s largest Art Nouveau complex. Formerly a fully functioning hospital, it is now an architectural marvel open to the public.", cost: "€16 Entry", hours: "10:00 AM - 5:00 PM", img: img2, map: "Hospital de Sant Pau, Barcelona", rating: "4.7", reviews: "21k" },
+        { id: "r3", tag: "Architecture", title: "Casa Milà (La Pedrera)", desc: "Head to Passeig de Gràcia to see Gaudí's stone building.", fullDesc: "Casa Milà, popularly known as La Pedrera, is one of Gaudí’s most iconic works of civic architecture. Its undulating stone facade and surreal rooftop chimneys are a must-see.", cost: "€25 - €28", hours: "9:00 AM - 8:30 PM", img: img3, map: "Casa Milà, Barcelona", rating: "4.6", reviews: "65k" },
+        { id: "r4", tag: "Architecture", title: "Casa Batlló", desc: "Explore the 'Bone House' with its colorful dragon-scale roof.", fullDesc: "Locally known as the House of Bones due to its skeletal organic design, Casa Batlló is considered one of Gaudí's masterpieces. The audio guide is highly recommended.", cost: "€35 (Book ahead)", hours: "9:00 AM - 8:00 PM", img: img2, map: "Casa Batlló, Barcelona", rating: "4.7", reviews: "98k" },
+        { id: "r6", tag: "Music", title: "Palau de la Música", desc: "Tour this colorful modernist concert hall.", fullDesc: "This concert hall is an architectural jewel of Catalan Art Nouveau. The stunning stained-glass inverted dome skylight is the centerpiece of the building.", cost: "€18 Guided Tour", hours: "10:00 AM - 3:30 PM", img: img2, map: "Palau de la Música Catalana, Barcelona", rating: "4.8", reviews: "38k" },
+        { id: "r7", tag: "History", title: "Barcelona Cathedral", desc: "Walk into the Gothic Quarter to see this massive cathedral.", fullDesc: "The Cathedral of the Holy Cross and Saint Eulalia is a stunning Gothic cathedral constructed between the 13th to 15th centuries. Check out the cloister which keeps 13 white geese.", cost: "€9 (Tourist Entry)", hours: "9:30 AM - 6:30 PM", img: img4, map: "Barcelona Cathedral", rating: "4.6", reviews: "52k" },
+        { id: "r9", tag: "Museum", title: "Picasso Museum", desc: "Cross into El Born to see Picasso's early works.", fullDesc: "Housed in five adjoining medieval palaces, this museum contains over 4,000 works by the Spanish cubist. It offers an incredible look at his formative years.", cost: "€14", hours: "10:00 AM - 7:00 PM (Closed Mondays)", img: img4, map: "Picasso Museum, Barcelona", rating: "4.3", reviews: "45k" },
+        { id: "r10", tag: "Park", title: "Ciutadella Park", desc: "Relax by the monumental waterfall.", fullDesc: "Barcelona's 'green lung'. It features a beautiful boating lake, a massive monumental waterfall designed with the help of a young Gaudí, and lush gardens.", cost: "Free", hours: "10:00 AM - 10:30 PM", img: img6, map: "Parc de la Ciutadella, Barcelona", rating: "4.6", reviews: "75k" },
+        { id: "r11", tag: "Views", title: "Montjuïc Castle", desc: "Take the cable car up the hill for 360-degree views.", fullDesc: "An old military fortress with roots dating back to 1640. It offers fantastic 360-degree panoramic views of the Barcelona harbor and city skyline.", cost: "€9 (Cable car extra)", hours: "10:00 AM - 8:00 PM", img: img4, map: "Montjuic Castle, Barcelona", rating: "4.4", reviews: "32k" },
+        { id: "r13", tag: "Museum", title: "MNAC Art Museum", desc: "Walk over to the spectacular National Art Museum.", fullDesc: "The Museu Nacional d'Art de Catalunya is housed in a stunning palace and showcases a thousand years of Catalan art, from Romanesque murals to modern pieces.", cost: "€12", hours: "10:00 AM - 6:00 PM", img: img2, map: "MNAC, Barcelona", rating: "4.7", reviews: "28k" },
+        { id: "r15", tag: "Beach", title: "Barceloneta Beach", desc: "Walk the lively beach promenade. Grab dinner by the sea.", fullDesc: "The most famous beach in the city. Lined with chiringuitos (beach bars), seafood restaurants, and a bustling paved promenade perfect for a sunset stroll.", cost: "Free Public Beach", hours: "Open 24/7", img: img8, map: "Barceloneta Beach, Barcelona", rating: "4.3", reviews: "50k" },
+        { id: "r16", tag: "Park", title: "Park Güell", desc: "Explore Gaudí's whimsical, mosaic-covered park.", fullDesc: "A whimsical public park system composed of gardens and architectonic elements. The famous Monumental Zone requires timed entry tickets.", cost: "€10 Entry", hours: "9:30 AM - 7:30 PM", img: img5, map: "Park Guell, Barcelona", rating: "4.5", reviews: "145k" },
+        { id: "r19", tag: "Market", title: "Mercat de la Boqueria", desc: "Experience this massive, vibrant food market.", fullDesc: "The most famous public market in Barcelona. Get lost amongst the hanging hams, fresh fruit smoothies, and incredible sit-down tapas bars hidden inside.", cost: "Free Entry", hours: "8:00 AM - 8:30 PM (Closed Sundays)", img: imgTapas, map: "Mercado de La Boqueria, Barcelona", rating: "4.5", reviews: "115k" }
       ],
       food: [
-        { id: "f1", category: "Tapas", tag: "Tapas", title: "Ciudad Condal", desc: "Classic tapas bar with an incredible display of fresh food.", fullDesc: "A Barcelona institution. Bustling, classic tapas bar with an incredible display of fresh food right when you walk in. Expect a wait, but it's worth it.", cost: "€20 - €35 per person", hours: "8:00 AM - 1:30 AM", img: imgTapas, map: "Ciutat+Comtal,+Barcelona", rating: "4.5", reviews: "16.2k" },
-        { id: "f2", category: "Tapas", tag: "Spanish", title: "El Nacional", desc: "Stunning multi-space culinary venue.", fullDesc: "A stunning, massive multi-space culinary venue offering different types of Spanish cuisine under one roof. Great atmosphere for a group dinner.", cost: "€30 - €50 per person", hours: "12:00 PM - 1:00 AM", img: imgTapas, map: "El+Nacional,+Barcelona", rating: "4.4", reviews: "22k" },
-        { id: "f3", category: "Tapas", tag: "Pinchos", title: "Quimet & Quimet", desc: "Legendary standing-room-only bar.", fullDesc: "Tiny, legendary standing-room-only bar famous for its incredible mounted tapas (montaditos) and fantastic wine selection.", cost: "€15 - €25 per person", hours: "12:00 PM - 4:00 PM, 7:00 PM - 10:30 PM", img: imgTapas, map: "Quimet+and+Quimet,+Barcelona", rating: "4.6", reviews: "8k" },
-        { id: "f4", category: "Pizza", tag: "Pizza", title: "Sartoria Panatieri", desc: "Voted one of the best pizzerias in Europe! Organic ingredients.", fullDesc: "Farm-to-table artisanal pizza. They cure their own meats and source organic, local ingredients for some of the best Neapolitan pizza in the city.", cost: "€15 - €25 per person", hours: "1:00 PM - 11:30 PM", img: imgPizza, map: "Sartoria+Panatieri,+Barcelona", rating: "4.6", reviews: "2.1k" },
-        { id: "f5", category: "Pizza", tag: "Pizza", title: "NAP Antic", desc: "Authentic, affordable Neapolitan Pizza.", fullDesc: "Neapolitan Authentic Pizza. Affordable, fast, and features the perfect wood-fired crust. A local favorite.", cost: "€10 - €20 per person", hours: "1:00 PM - 12:00 AM", img: imgPizza, map: "NAP+Antic,+Barcelona", rating: "4.5", reviews: "4.5k" },
-        { id: "f6", category: "Italian", tag: "Italian", title: "Maccaroni", desc: "Excellent, authentic fresh pasta made daily.", fullDesc: "Excellent, authentic fresh pasta made daily right in front of you. A cozy spot when you need a break from tapas.", cost: "€15 - €25 per person", hours: "1:00 PM - 11:30 PM", img: imgItalian, map: "Maccaroni,+Barcelona", rating: "4.6", reviews: "1.2k" },
-        { id: "f7", category: "Italian", tag: "Italian", title: "Le Cucine Mandarosso", desc: "Hidden gem serving hearty Italian dishes.", fullDesc: "Hidden gem near Palau de la Música serving traditional, hearty Italian dishes and great desserts.", cost: "€20 - €30 per person", hours: "1:00 PM - 11:30 PM", img: imgItalian, map: "Le+Cucine+Mandarosso,+Barcelona", rating: "4.4", reviews: "3.1k" },
-        { id: "f8", category: "Café", tag: "Coffee", title: "Nomad Coffee Lab", desc: "For the serious coffee lovers.", fullDesc: "Some of the best specialty roasted coffee you will find in the city. The perfect place for a high-quality morning espresso.", cost: "€3 - €8", hours: "8:30 AM - 5:30 PM", img: imgCafe, map: "Nomad+Coffee+Lab,+Barcelona", rating: "4.7", reviews: "2.5k" },
-        { id: "f9", category: "Café", tag: "Brunch", title: "Brunch & Cake", desc: "Highly photogenic brunch dishes.", fullDesc: "Famous for wildly creative, highly photogenic brunch dishes and enormous baked goods. Expect a line on weekends.", cost: "€15 - €25 per person", hours: "9:00 AM - 5:00 PM", img: imgCafe, map: "Brunch+and+Cake,+Barcelona", rating: "4.3", reviews: "6.8k" },
-        { id: "f10", category: "Vegetarian", tag: "Veg", title: "Teresa Carles", desc: "Legendary vegetarian spot. Amazing plant-based tapas.", fullDesc: "One of the most famous and highly rated vegetarian restaurants in the city. Located near Plaça de Catalunya, offering incredible plant-based dishes.", cost: "€25 - €40 per person", hours: "12:00 PM - 11:30 PM", img: imgTapas, map: "Teresa+Carles,+Barcelona", rating: "4.4", reviews: "8.5k" },
-        { id: "f11", category: "Vegetarian", tag: "Vegan", title: "Rasoterra", desc: "Cozy vegan bistro tucked in the Gothic Quarter.", fullDesc: "Cozy vegan bistro tucked in the Gothic Quarter. Focuses on local, organic slow-food and an excellent natural wine list.", cost: "€20 - €35 per person", hours: "1:00 PM - 11:00 PM", img: imgTapas, map: "Rasoterra,+Barcelona", rating: "4.6", reviews: "1.2k" },
-        { id: "f12", category: "Indian", tag: "Upscale", title: "Bembi", desc: "Upscale, highly-rated authentic Indian cuisine.", fullDesc: "Modern, upscale setting offering incredibly flavorful, authentic Indian cuisine in the Eixample district. A fantastic spot for a date or nice dinner.", cost: "€30 - €50 per person", hours: "1:00 PM - 4:00 PM, 8:00 PM - 11:30 PM", img: imgIndian, map: "Bembi,+Barcelona", rating: "4.5", reviews: "2.8k" },
-        { id: "f13", category: "Indian", tag: "Street Food", title: "Surya", desc: "Vibrant and incredibly fun spot for authentic Indian street food.", fullDesc: "Modeled after the colorful streets of Mumbai, this fun, vibrant restaurant serves incredible Indian street food, curries, and cocktails.", cost: "€15 - €25 per person", hours: "12:00 PM - 12:00 AM", img: imgIndian, map: "Surya+Pau+Claris,+Barcelona", rating: "4.2", reviews: "1.9k" },
-        { id: "f14", category: "Indian", tag: "Home-style", title: "Swad", desc: "Delicious, home-style traditional curries.", fullDesc: "A hidden gem in Poblenou famous for absolutely delicious, home-style traditional curries. Highly recommended by locals.", cost: "€15 - €25 per person", hours: "1:00 PM - 11:00 PM", img: imgIndian, map: "Swad,+Barcelona", rating: "4.7", reviews: "950" },
-        { id: "f15", category: "Asian", tag: "Sushi", title: "Roots & Rolls", desc: "Incredible plant-based sushi and Asian-fusion tapas.", fullDesc: "A completely unique experience offering creative, 100% plant-based sushi rolls and Asian-fusion tapas in a sleek, modern environment.", cost: "€20 - €35 per person", hours: "1:00 PM - 11:00 PM", img: imgTapas, map: "Roots+and+Rolls,+Barcelona", rating: "4.6", reviews: "1.4k" },
-        { id: "f16", category: "Asian", tag: "Pan-Asian", title: "Boa-Bao", desc: "Authentic street food from across Asia.", fullDesc: "A vibrant restaurant offering authentic street food from across Asia in a beautiful setting. The Bao buns are a must-try.", cost: "€25 - €40 per person", hours: "1:00 PM - 11:30 PM", img: imgTapas, map: "Boa-Bao,+Barcelona", rating: "4.4", reviews: "3.2k" }
+        { id: "f1", category: "Tapas", tag: "Tapas", title: "Ciudad Condal", desc: "Classic tapas bar with an incredible display of fresh food.", fullDesc: "A Barcelona institution. Bustling, classic tapas bar with an incredible display of fresh food right when you walk in. Expect a wait, but it's worth it.", cost: "€20 - €35 per person", hours: "8:00 AM - 1:30 AM", img: imgTapas, map: "Ciutat Comtal, Barcelona", rating: "4.5", reviews: "16.2k" },
+        { id: "f2", category: "Tapas", tag: "Spanish", title: "El Nacional", desc: "Stunning multi-space culinary venue.", fullDesc: "A stunning, massive multi-space culinary venue offering different types of Spanish cuisine under one roof. Great atmosphere for a group dinner.", cost: "€30 - €50 per person", hours: "12:00 PM - 1:00 AM", img: imgTapas, map: "El Nacional, Barcelona", rating: "4.4", reviews: "22k" },
+        { id: "f3", category: "Tapas", tag: "Pinchos", title: "Quimet & Quimet", desc: "Legendary standing-room-only bar.", fullDesc: "Tiny, legendary standing-room-only bar famous for its incredible mounted tapas (montaditos) and fantastic wine selection.", cost: "€15 - €25 per person", hours: "12:00 PM - 4:00 PM, 7:00 PM - 10:30 PM", img: imgTapas, map: "Quimet and Quimet, Barcelona", rating: "4.6", reviews: "8k" },
+        { id: "f4", category: "Pizza", tag: "Pizza", title: "Sartoria Panatieri", desc: "Voted one of the best pizzerias in Europe! Organic ingredients.", fullDesc: "Farm-to-table artisanal pizza. They cure their own meats and source organic, local ingredients for some of the best Neapolitan pizza in the city.", cost: "€15 - €25 per person", hours: "1:00 PM - 11:30 PM", img: imgPizza, map: "Sartoria Panatieri, Barcelona", rating: "4.6", reviews: "2.1k" },
+        { id: "f5", category: "Pizza", tag: "Pizza", title: "NAP Antic", desc: "Authentic, affordable Neapolitan Pizza.", fullDesc: "Neapolitan Authentic Pizza. Affordable, fast, and features the perfect wood-fired crust. A local favorite.", cost: "€10 - €20 per person", hours: "1:00 PM - 12:00 AM", img: imgPizza, map: "NAP Antic, Barcelona", rating: "4.5", reviews: "4.5k" },
+        { id: "f6", category: "Italian", tag: "Italian", title: "Maccaroni", desc: "Excellent, authentic fresh pasta made daily.", fullDesc: "Excellent, authentic fresh pasta made daily right in front of you. A cozy spot when you need a break from tapas.", cost: "€15 - €25 per person", hours: "1:00 PM - 11:30 PM", img: imgItalian, map: "Maccaroni, Barcelona", rating: "4.6", reviews: "1.2k" },
+        { id: "f7", category: "Italian", tag: "Italian", title: "Le Cucine Mandarosso", desc: "Hidden gem serving hearty Italian dishes.", fullDesc: "Hidden gem near Palau de la Música serving traditional, hearty Italian dishes and great desserts.", cost: "€20 - €30 per person", hours: "1:00 PM - 11:30 PM", img: imgItalian, map: "Le Cucine Mandarosso, Barcelona", rating: "4.4", reviews: "3.1k" },
+        { id: "f8", category: "Café", tag: "Coffee", title: "Nomad Coffee Lab", desc: "For the serious coffee lovers.", fullDesc: "Some of the best specialty roasted coffee you will find in the city. The perfect place for a high-quality morning espresso.", cost: "€3 - €8", hours: "8:30 AM - 5:30 PM", img: imgCafe, map: "Nomad Coffee Lab, Barcelona", rating: "4.7", reviews: "2.5k" },
+        { id: "f9", category: "Café", tag: "Brunch", title: "Brunch & Cake", desc: "Highly photogenic brunch dishes.", fullDesc: "Famous for wildly creative, highly photogenic brunch dishes and enormous baked goods. Expect a line on weekends.", cost: "€15 - €25 per person", hours: "9:00 AM - 5:00 PM", img: imgCafe, map: "Brunch and Cake, Barcelona", rating: "4.3", reviews: "6.8k" },
+        { id: "f10", category: "Vegetarian", tag: "Veg", title: "Teresa Carles", desc: "Legendary vegetarian spot. Amazing plant-based tapas.", fullDesc: "One of the most famous and highly rated vegetarian restaurants in the city. Located near Plaça de Catalunya, offering incredible plant-based dishes.", cost: "€25 - €40 per person", hours: "12:00 PM - 11:30 PM", img: imgTapas, map: "Teresa Carles, Barcelona", rating: "4.4", reviews: "8.5k" },
+        { id: "f11", category: "Vegetarian", tag: "Vegan", title: "Rasoterra", desc: "Cozy vegan bistro tucked in the Gothic Quarter.", fullDesc: "Cozy vegan bistro tucked in the Gothic Quarter. Focuses on local, organic slow-food and an excellent natural wine list.", cost: "€20 - €35 per person", hours: "1:00 PM - 11:00 PM", img: imgTapas, map: "Rasoterra, Barcelona", rating: "4.6", reviews: "1.2k" },
+        { id: "f12", category: "Indian", tag: "Upscale", title: "Bembi", desc: "Upscale, highly-rated authentic Indian cuisine.", fullDesc: "Modern, upscale setting offering incredibly flavorful, authentic Indian cuisine in the Eixample district. A fantastic spot for a date or nice dinner.", cost: "€30 - €50 per person", hours: "1:00 PM - 4:00 PM, 8:00 PM - 11:30 PM", img: imgIndian, map: "Bembi, Barcelona", rating: "4.5", reviews: "2.8k" },
+        { id: "f13", category: "Indian", tag: "Street Food", title: "Surya", desc: "Vibrant and incredibly fun spot for authentic Indian street food.", fullDesc: "Modeled after the colorful streets of Mumbai, this fun, vibrant restaurant serves incredible Indian street food, curries, and cocktails.", cost: "€15 - €25 per person", hours: "12:00 PM - 12:00 AM", img: imgIndian, map: "Surya Pau Claris, Barcelona", rating: "4.2", reviews: "1.9k" },
+        { id: "f14", category: "Indian", tag: "Home-style", title: "Swad", desc: "Delicious, home-style traditional curries.", fullDesc: "A hidden gem in Poblenou famous for absolutely delicious, home-style traditional curries. Highly recommended by locals.", cost: "€15 - €25 per person", hours: "1:00 PM - 11:00 PM", img: imgIndian, map: "Swad, Barcelona", rating: "4.7", reviews: "950" },
+        { id: "f15", category: "Asian", tag: "Sushi", title: "Roots & Rolls", desc: "Incredible plant-based sushi and Asian-fusion tapas.", fullDesc: "A completely unique experience offering creative, 100% plant-based sushi rolls and Asian-fusion tapas in a sleek, modern environment.", cost: "€20 - €35 per person", hours: "1:00 PM - 11:00 PM", img: imgTapas, map: "Roots and Rolls, Barcelona", rating: "4.6", reviews: "1.4k" },
+        { id: "f16", category: "Asian", tag: "Pan-Asian", title: "Boa-Bao", desc: "Authentic street food from across Asia.", fullDesc: "A vibrant restaurant offering authentic street food from across Asia in a beautiful setting. The Bao buns are a must-try.", cost: "€25 - €40 per person", hours: "1:00 PM - 11:30 PM", img: imgTapas, map: "Boa-Bao, Barcelona", rating: "4.4", reviews: "3.2k" }
       ]
     };
 
     const contentDiv = document.getElementById('app-content');
     const filterBar = document.getElementById('filter-bar');
     const detailView = document.getElementById('detail-view');
+    
     const ALL_ITEMS = [...DATA.route, ...DATA.sights, ...DATA.food];
 
     // --- LOCAL STORAGE STATE ---
@@ -367,27 +386,46 @@
     }
 
     function getRatingHTML(rating, rev) {
-      return `<div class="rating-container"><span class="star">★</span><strong>${rating}</strong><span class="review-count">(${rev})</span></div>`;
+      return `<div class="rating-container"><span class="star">★</span><strong>${rating}</strong><span class="review-count">(${rev} reviews)</span></div>`;
     }
 
+    function moveRouteItem(itemId, newDay) {
+      const itemIndex = DATA.route.findIndex(i => i.id === itemId);
+      if (itemIndex > -1) { DATA.route[itemIndex].day = parseInt(newDay); renderRouteTab(); }
+    }
+
+    // --- FIXED GOOGLE MAPS URLS ---
     function openDayRoute(dayNumber) {
       const dayItems = DATA.route.filter(item => item.day === dayNumber);
       if (dayItems.length === 0) return;
+      
       const origin = encodeURIComponent(dayItems[0].map);
       const destination = encodeURIComponent(dayItems[dayItems.length - 1].map);
-      let waypoints = dayItems.length > 2 ? '&waypoints=' + dayItems.slice(1, -1).map(i => encodeURIComponent(i.map)).join('|') : '';
+      
+      let waypoints = '';
+      if (dayItems.length > 2) {
+        const mids = dayItems.slice(1, -1);
+        waypoints = '&waypoints=' + mids.map(item => encodeURIComponent(item.map)).join('%7C'); 
+      }
+
       const travelMode = dayNumber === 5 ? 'driving' : 'walking';
-      window.open(`http://googleusercontent.com/maps.google.com/maps?saddr=${origin}&daddr=${destination}${waypoints}&dirflg=${travelMode === 'walking' ? 'w' : 'd'}`, '_blank');
+      
+      // Official Google Maps Directions URL
+      const mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}${waypoints}&travelmode=${travelMode}`;
+      window.open(mapsUrl, '_blank');
     }
 
-    // --- VIEWS ---
     function openDetail(itemId) {
       const item = ALL_ITEMS.find(i => i.id === itemId);
       if(!item) return;
+
       const isFav = favorites.includes(item.id);
       const isVisited = visited.includes(item.id);
       const noteVal = notes[item.id] || "";
       const expVal = expenses[item.id] ? expenses[item.id].amount : "";
+      
+      // Official Google Maps Search URL
+      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.map)}`;
       
       detailView.innerHTML = `
         <input type="hidden" id="current-detail-id" value="${item.id}">
@@ -401,6 +439,11 @@
           <button id="detail-fav-btn" class="detail-fav-btn" onclick="toggleFavorite('${item.id}', event)">
             ${getHeartIcon(isFav)}
           </button>
+
+          <div style="display: flex; gap: 8px; margin-bottom: 0.5rem;">
+            <span class="tag tag-default" style="margin-bottom:0;">${item.tag}</span>
+          </div>
+          
           <h1 class="detail-title">${item.title}</h1>
           ${getRatingHTML(item.rating, item.reviews)}
           
@@ -420,16 +463,33 @@
 
           <div style="margin-top:2rem;">
             <p class="detail-desc">${item.fullDesc}</p>
-            <div class="info-row"><span class="info-icon">💰</span><div class="info-text"><span class="info-label">Cost</span><span class="info-val">${item.cost}</span></div></div>
-            <div class="info-row"><span class="info-icon">🕒</span><div class="info-text"><span class="info-label">Hours</span><span class="info-val">${item.hours}</span></div></div>
+            <div class="info-row">
+              <span class="info-icon">💰</span>
+              <div class="info-text">
+                <span class="info-label">Cost / Entry</span>
+                <span class="info-val">${item.cost}</span>
+              </div>
+            </div>
+            
+            <div class="info-row">
+              <span class="info-icon">🕒</span>
+              <div class="info-text">
+                <span class="info-label">Opening Hours</span>
+                <span class="info-val">${item.hours}</span>
+              </div>
+            </div>
           </div>
           
-          <a href="http://googleusercontent.com/maps.google.com/maps?q=${encodeURIComponent(item.map)}" target="_blank" class="detail-map-btn">📍 Open in Maps</a>
-        </div>`;
+          <a href="${mapsUrl}" target="_blank" class="detail-map-btn">📍 Open in Google Maps</a>
+        </div>
+      `;
+
       detailView.classList.add('active');
     }
 
-    function closeDetail() { detailView.classList.remove('active'); }
+    function closeDetail() {
+      detailView.classList.remove('active');
+    }
 
     function buildCard(item, isTimeline = false, tagText = "", delay = 0) {
       const isFav = favorites.includes(item.id);
@@ -437,12 +497,15 @@
       const visClass = isVisited ? "visited-card" : "";
       const dot = isTimeline ? `<div class="timeline-dot"></div>` : "";
       
+      // Official Google Maps Search URL
+      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.map)}`;
+      
       return `
         ${dot}
         <div class="card ${visClass}" style="animation-delay: ${delay}s" onclick="openDetail('${item.id}')">
           <div class="visited-badge">✅ Visited</div>
           <div class="card-img-container">
-            <img src="${item.img}" class="card-img">
+            <img src="${item.img}" alt="${item.title}" class="card-img" onerror="this.onerror=null;this.src='https://placehold.co/600x400?text=${item.title.replace(/ /g, '+')}';">
             <button class="fav-btn" onclick="toggleFavorite('${item.id}', event)">${getHeartIcon(isFav)}</button>
           </div>
           <div class="card-content">
@@ -450,7 +513,7 @@
             <h3>${item.title}</h3>
             ${getRatingHTML(item.rating, item.reviews)}
             <p class="preview-text">${item.desc}</p>
-            <a href="http://googleusercontent.com/maps.google.com/maps?q=${encodeURIComponent(item.map)}" target="_blank" class="map-btn" onclick="event.stopPropagation()">📍 Directions</a>
+            <a href="${mapsUrl}" target="_blank" class="map-btn" onclick="event.stopPropagation()">📍 Get Directions</a>
           </div>
         </div>`;
     }
@@ -458,11 +521,24 @@
     function renderRouteTab() {
       contentDiv.className = ''; 
       let html = '';
-      for (let d = 1; d <= 5; d++) { 
+      for (let d = 1; d <= 5; d++) {
         const dayItems = DATA.route.filter(item => item.day === d);
         if(dayItems.length === 0) continue;
-        html += `<div class="day-group"><div class="day-header"><h2>Day ${d}</h2><button class="route-master-btn" onclick="openDayRoute(${d})">🗺️ Open Day ${d} Route</button></div>`;
-        dayItems.forEach((item, idx) => { html += buildCard(item, true, `Stop ${idx + 1}`, idx * 0.05); });
+
+        html += `
+        <div class="day-group">
+          <div class="day-header">
+            <h2>Day ${d}</h2>
+            <button class="route-master-btn" onclick="openDayRoute(${d})">
+              🗺️ Open Day ${d} Route
+            </button>
+          </div>
+        `;
+
+        dayItems.forEach((item, index) => {
+          html += buildCard(item, true, `Stop ${index + 1}`, index * 0.05);
+        });
+
         html += `</div>`; 
       }
       contentDiv.innerHTML = html;
@@ -470,11 +546,22 @@
 
     function renderList(dataArray) {
       contentDiv.className = 'card-container'; 
+      
       if (dataArray.length === 0) {
-        contentDiv.innerHTML = `<div class="empty-state"><h3>No places found</h3></div>`;
+        contentDiv.innerHTML = `
+          <div class="empty-state">
+            <h3>No places found</h3>
+            <p>Go explore the other tabs and click the heart icon to save places here!</p>
+          </div>
+        `;
         return;
       }
-      contentDiv.innerHTML = dataArray.map((item, idx) => buildCard(item, false, item.tag || item.title, idx * 0.05)).join('');
+
+      let html = '';
+      dataArray.forEach((item, index) => {
+        html += buildCard(item, false, item.tag || item.title, index * 0.05);
+      });
+      contentDiv.innerHTML = html;
     }
 
     function renderPackingTab() {
@@ -519,28 +606,36 @@
     function switchTab(tabId, buttonElement) {
       document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
       buttonElement.classList.add('active');
-      filterBar.style.display = (tabId === 'food') ? 'block' : 'none';
 
-      if (tabId === 'route') renderRouteTab(); 
-      else if (tabId === 'pack') renderPackingTab();
-      else if (tabId === 'budget') renderBudgetTab();
-      else if (tabId === 'saved') {
-        const savedItems = ALL_ITEMS.filter(item => favorites.includes(item.id));
-        renderList(Array.from(new Set(savedItems.map(a => a.id))).map(id => savedItems.find(a => a.id === id)));
-      } 
-      else if (tabId === 'food') {
-        filterFood('All', filterBar.querySelector('button'));
+      if (tabId === 'food') {
+        filterBar.style.display = 'block';
+        filterFood('All', filterBar.querySelector('button')); 
+      } else {
+        filterBar.style.display = 'none';
+        
+        if (tabId === 'route') { 
+          renderRouteTab(); 
+        } else if (tabId === 'pack') {
+          renderPackingTab();
+        } else if (tabId === 'budget') {
+          renderBudgetTab();
+        } else if (tabId === 'saved') {
+          const savedItems = ALL_ITEMS.filter(item => favorites.includes(item.id));
+          const uniqueSavedItems = Array.from(new Set(savedItems.map(a => a.id))).map(id => savedItems.find(a => a.id === id));
+          renderList(uniqueSavedItems);
+        } else { 
+          renderList(DATA[tabId]); 
+        }
       }
-      else renderList(DATA[tabId]); 
     }
 
-    function filterFood(category, btn) {
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+    function filterFood(category, buttonElement) {
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      buttonElement.classList.add('active');
       renderList(category === 'All' ? DATA.food : DATA.food.filter(item => item.category === category));
     }
 
-    // Init
+    // Initialize
     switchTab('route', document.querySelector('nav button'));
   </script>
 </body>
