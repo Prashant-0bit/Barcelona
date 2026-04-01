@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="referrer" content="no-referrer" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  
   <title>Barna - Barcelona Guide</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
@@ -18,43 +17,25 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #FF385C; 
-      --primary-dark: #E61E4D;
-      --secondary: #222222;
-      --bg-color: #F7F7F9;
-      --card-bg: #FFFFFF;
-      --text-main: #222222;
-      --text-muted: #717171;
-      --border-color: #EBEBEB;
+      --primary: #FF385C; --primary-dark: #E61E4D; --secondary: #222222;
+      --bg-color: #F7F7F9; --card-bg: #FFFFFF; --text-main: #222222;
+      --text-muted: #717171; --border-color: #EBEBEB; --success: #10B981;
     }
 
     * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-
     body { margin: 0; background-color: var(--bg-color); color: var(--text-main); overflow-x: hidden; }
-
-    #main-view { padding-bottom: 4rem; transition: filter 0.3s ease; }
+    #main-view { padding-bottom: 5rem; transition: filter 0.3s ease; }
     
-    header {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-      color: white; padding: 1.2rem; position: sticky; top: 0; z-index: 101;
-      box-shadow: 0 4px 20px rgba(229, 30, 77, 0.25); display: flex; justify-content: center; align-items: center;
-    }
-
+    header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; padding: 1.2rem; position: sticky; top: 0; z-index: 101; box-shadow: 0 4px 20px rgba(229, 30, 77, 0.25); display: flex; justify-content: center; align-items: center; flex-direction: column; }
     .logo-container { display: flex; align-items: center; gap: 10px; }
     .logo-icon { flex-shrink: 0; }
     .logo-text { font-size: 1.8rem; font-weight: 800; letter-spacing: -0.5px; }
+    
+    #weather-banner { font-size: 0.85rem; font-weight: 600; margin-top: 8px; opacity: 0.9; background: rgba(0,0,0,0.15); padding: 4px 12px; border-radius: 20px; transition: opacity 0.3s; }
 
-    nav {
-      display: flex; overflow-x: auto; white-space: nowrap; background-color: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(235, 235, 235, 0.5); position: sticky; top: 68px; z-index: 100; scrollbar-width: none; 
-    }
+    nav { display: flex; overflow-x: auto; white-space: nowrap; background-color: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(235, 235, 235, 0.5); position: sticky; top: 82px; z-index: 100; scrollbar-width: none; }
     nav::-webkit-scrollbar { display: none; }
-
-    nav button {
-      flex: 1; padding: 1.2rem 1.2rem; border: none; background: none; font-size: 0.95rem; font-weight: 700; 
-      color: var(--text-muted); cursor: pointer; transition: 0.3s ease; border-bottom: 3px solid transparent; opacity: 0.7;
-    }
+    nav button { flex: 1; padding: 1.2rem; border: none; background: none; font-size: 0.95rem; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.3s ease; border-bottom: 3px solid transparent; opacity: 0.7; }
     nav button:hover { opacity: 1; color: var(--secondary); }
     nav button.active { color: var(--primary); border-bottom: 3px solid var(--primary); opacity: 1; }
 
@@ -62,163 +43,86 @@
 
     #filter-bar { display: none; overflow-x: auto; white-space: nowrap; padding: 0.5rem 0 1.5rem 0; scrollbar-width: none; }
     #filter-bar::-webkit-scrollbar { display: none; }
-    
-    .filter-btn {
-      background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main);
-      padding: 0.6rem 1.2rem; border-radius: 30px; font-weight: 600; font-size: 0.9rem; cursor: pointer; margin-right: 0.8rem;
-    }
+    .filter-btn { background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); padding: 0.6rem 1.2rem; border-radius: 30px; font-weight: 600; font-size: 0.9rem; cursor: pointer; margin-right: 0.8rem; }
     .filter-btn.active { background-color: var(--secondary); color: white; border-color: var(--secondary); }
     
     .card-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.8rem; }
-
-    /* --- NEW: Route Timeline Styling --- */
     .day-group { position: relative; padding-left: 25px; margin-bottom: 3rem; }
-    /* The vertical line connecting the places */
-    .day-group::before {
-      content: ''; position: absolute; left: 6px; top: 80px; bottom: 50px;
-      width: 4px; background: #E2E8F0; border-radius: 4px; z-index: 1;
-    }
-    
-    .day-header {
-      background: white; border-radius: 16px; padding: 1.2rem; margin-bottom: 1.5rem;
-      border: 2px solid var(--primary); box-shadow: 0 4px 15px rgba(255, 56, 92, 0.15);
-      position: relative; z-index: 2; margin-left: -25px;
-    }
+    .day-group::before { content: ''; position: absolute; left: 6px; top: 80px; bottom: 50px; width: 4px; background: #E2E8F0; border-radius: 4px; z-index: 1; }
+    .day-header { background: white; border-radius: 16px; padding: 1.2rem; margin-bottom: 1.5rem; border: 2px solid var(--primary); box-shadow: 0 4px 15px rgba(255, 56, 92, 0.15); position: relative; z-index: 2; margin-left: -25px; }
     .day-header h2 { margin: 0 0 0.8rem 0; color: var(--secondary); font-size: 1.4rem; }
-    
-    .route-master-btn {
-      display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
-      background: var(--primary); color: white; border: none; padding: 1rem; border-radius: 12px;
-      font-weight: 800; font-size: 1rem; cursor: pointer; transition: 0.2s;
-    }
-    .route-master-btn:active { transform: scale(0.98); }
-
-    /* Timeline Dots */
-    .timeline-dot {
-      position: absolute; left: -25px; top: 30px; width: 20px; height: 20px;
-      background: var(--primary); border: 4px solid white; border-radius: 50%; z-index: 2;
-      box-shadow: 0 0 0 2px var(--primary);
-    }
+    .route-master-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: var(--primary); color: white; border: none; padding: 1rem; border-radius: 12px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: 0.2s; }
+    .timeline-dot { position: absolute; left: -25px; top: 30px; width: 20px; height: 20px; background: var(--primary); border: 4px solid white; border-radius: 50%; z-index: 2; box-shadow: 0 0 0 2px var(--primary); }
     .timeline-dot.end { background: var(--secondary); box-shadow: 0 0 0 2px var(--secondary); }
 
-    .card {
-      background-color: var(--card-bg); border-radius: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.04);
-      overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--border-color);
-      cursor: pointer; transition: transform 0.2s ease; position: relative; margin-bottom: 1.8rem;
-      animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
-    }
-    .card:active { transform: scale(0.97); }
-    
+    .card { background-color: var(--card-bg); border-radius: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.04); overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--border-color); cursor: pointer; transition: transform 0.2s ease; position: relative; margin-bottom: 1.8rem; animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards; }
+    .card.visited-card { opacity: 0.7; filter: grayscale(50%); }
     @keyframes slideUpFade { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
-    
     .card-img-container { position: relative; width: 100%; height: 200px; }
     .card-img { width: 100%; height: 100%; object-fit: cover; background-color: #f0f0f0; }
     
-    .fav-btn {
-      position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px);
-      border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
-      cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 10; transition: transform 0.2s;
-    }
-    .fav-btn:active { transform: scale(0.8); }
-    .fav-btn svg { width: 20px; height: 20px; stroke: var(--text-main); fill: none; transition: fill 0.2s, stroke 0.2s; }
+    .fav-btn { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 10; transition: transform 0.2s; }
+    .fav-btn svg { width: 20px; height: 20px; stroke: var(--text-main); fill: none; transition: all 0.2s; }
     .fav-btn.active svg { fill: var(--primary); stroke: var(--primary); }
 
+    .visited-badge { position: absolute; top: 12px; left: 12px; background: var(--success); color: white; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 800; display: none; z-index: 10; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    .card.visited-card .visited-badge { display: block; }
+
     .card-content { padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1; }
-    
-    .tag {
-      display: inline-block; padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.75rem; font-weight: 800; 
-      margin-bottom: 0.8rem; align-self: flex-start; text-transform: uppercase; letter-spacing: 0.5px;
-    }
+    .tag { display: inline-block; padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.75rem; font-weight: 800; margin-bottom: 0.8rem; align-self: flex-start; text-transform: uppercase; letter-spacing: 0.5px; }
     .day-1 { background-color: #FFE5EC; color: #D81159; } .day-2 { background-color: #E0F4FF; color: #0077B6; }
     .day-3 { background-color: #E8F5E9; color: #2E7D32; } .day-4 { background-color: #F3E5F5; color: #7B1FA2; }
     .day-5 { background-color: #FFF3E0; color: #E65100; } .tag-default { background-color: #F1F1F1; color: #222222; }
-
     .card h3 { margin: 0 0 0.4rem 0; color: var(--text-main); font-size: 1.35rem; font-weight: 800; }
     .rating-container { display: flex; align-items: center; margin-bottom: 0.8rem; font-size: 0.95rem; }
     .star { color: var(--primary); margin-right: 4px; font-weight: 800;}
     .review-count { color: var(--text-muted); margin-left: 6px; font-size: 0.9rem; }
     .card p.preview-text { margin: 0 0 1.2rem 0; color: var(--text-muted); line-height: 1.5; font-size: 0.95rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
-    .reschedule-box {
-      background: var(--bg-color); padding: 0.6rem 1rem; border-radius: 12px; margin-top: auto; margin-bottom: 1rem;
-      display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border-color);
-    }
-    .reschedule-box span { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); }
-    .reschedule-box select { padding: 0.4rem 0.6rem; border-radius: 8px; border: 1px solid #ddd; font-weight: 700; cursor: pointer; }
+    .map-btn { display: block; width: 100%; text-align: center; background-color: var(--bg-color); color: var(--secondary); padding: 0.8rem; border-radius: 12px; text-decoration: none; border: 1px solid #ddd; font-weight: 700; font-size: 0.95rem; transition: all 0.2s ease; margin-top: auto; }
 
-    .map-btn {
-      display: block; width: 100%; text-align: center; background-color: var(--bg-color); 
-      color: var(--secondary); padding: 0.8rem; border-radius: 12px; text-decoration: none; border: 1px solid #ddd;
-      font-weight: 700; font-size: 0.95rem; transition: all 0.2s ease; margin-top: auto;
-    }
-    .map-btn:active { transform: scale(0.98); }
-
-    /* --- Detail Page Overlay Styling --- */
-    #detail-view {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: var(--bg-color);
-      z-index: 9999; overflow-y: auto; transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-      display: flex; flex-direction: column;
-    }
+    /* Detail Page Overlay */
+    #detail-view { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: var(--bg-color); z-index: 9999; overflow-y: auto; transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; }
     #detail-view.active { transform: translateX(0); }
-
     .detail-hero { width: 100%; height: 40vh; background-size: cover; background-position: center; position: relative; }
-    
-    .back-btn {
-      position: absolute; top: 20px; left: 20px; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px);
-      border: none; padding: 12px 20px; border-radius: 50px; font-weight: 700; font-size: 1rem; cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 8px; transition: transform 0.2s;
-    }
-
-    .detail-body {
-      background: var(--card-bg); border-radius: 30px 30px 0 0; margin-top: -30px;
-      padding: 2rem 1.5rem; flex-grow: 1; display: flex; flex-direction: column; position: relative;
-    }
-    
-    .detail-fav-btn {
-      position: absolute; top: -24px; right: 24px; background: white; border: 1px solid var(--border-color);
-      border-radius: 50%; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;
-      cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 10; transition: transform 0.2s;
-    }
+    .back-btn { position: absolute; top: 20px; left: 20px; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); border: none; padding: 12px 20px; border-radius: 50px; font-weight: 700; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 8px; }
+    .detail-body { background: var(--card-bg); border-radius: 30px 30px 0 0; margin-top: -30px; padding: 2rem 1.5rem; flex-grow: 1; display: flex; flex-direction: column; position: relative; }
+    .detail-fav-btn { position: absolute; top: -24px; right: 24px; background: white; border: 1px solid var(--border-color); border-radius: 50%; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 10; }
     .detail-fav-btn.active svg { fill: var(--primary); stroke: var(--primary); }
-
     .detail-title { font-size: 2rem; font-weight: 800; margin: 0 0 0.5rem 0; color: var(--text-main); line-height: 1.2; padding-right: 50px; }
-    .detail-desc { font-size: 1.05rem; line-height: 1.7; color: var(--text-muted); margin-bottom: 2rem; }
-    
+    .detail-desc { font-size: 1.05rem; line-height: 1.7; color: var(--text-muted); margin-bottom: 1.5rem; }
     .info-row { display: flex; align-items: center; gap: 12px; background: #F8F9FA; padding: 1rem; border-radius: 12px; margin-bottom: 1rem; border: 1px solid #E2E8F0; }
     .info-icon { font-size: 1.3rem; }
     .info-text { display: flex; flex-direction: column; }
     .info-label { font-size: 0.75rem; text-transform: uppercase; font-weight: 800; color: var(--text-muted); letter-spacing: 0.5px; }
     .info-val { font-size: 0.95rem; font-weight: 700; color: var(--secondary); }
 
-    .detail-map-btn {
-      background-color: var(--primary); color: white; text-align: center; padding: 1.2rem;
-      border-radius: 16px; font-weight: 800; font-size: 1.1rem; text-decoration: none;
-      margin-top: 2rem; transition: background 0.2s; box-shadow: 0 4px 15px rgba(229, 30, 77, 0.3);
-    }
+    .detail-tools { display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem; }
+    .tool-group { display: flex; flex-direction: column; gap: 6px; }
+    .tool-group label { font-size: 0.85rem; font-weight: 800; color: var(--text-main); text-transform: uppercase; }
+    .note-input { width: 100%; min-height: 80px; padding: 12px; border-radius: 12px; border: 1px solid #ccc; font-family: inherit; resize: vertical; }
+    .expense-input { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #ccc; font-family: inherit; font-size: 1rem; }
+    .visited-toggle { background: var(--bg-color); border: 2px solid var(--border-color); color: var(--text-muted); padding: 12px; border-radius: 12px; font-weight: 800; cursor: pointer; transition: 0.2s; font-size: 1rem; }
+    .visited-toggle.active { background: var(--success); color: white; border-color: var(--success); }
 
-    .feedback-fab {
-      position: fixed; bottom: 20px; right: 20px; background: var(--secondary); color: white;
-      border: none; border-radius: 50px; padding: 12px 20px; font-weight: 700; font-size: 0.95rem;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer; z-index: 90; display: flex; align-items: center; gap: 8px;
-    }
-    
-    #feedback-modal {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.5);
-      z-index: 10000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px);
-    }
-    #feedback-modal.active { display: flex; }
-    
-    .modal-content { background: white; width: 90%; max-width: 400px; border-radius: 20px; padding: 2rem; display: flex; flex-direction: column; position: relative; }
-    .modal-content h2 { margin: 0 0 1rem 0; font-size: 1.5rem; }
-    .modal-content textarea { width: 100%; height: 100px; border-radius: 12px; border: 1px solid #ccc; padding: 1rem; font-family: inherit; font-size: 0.95rem; margin-bottom: 1rem; resize: none; }
-    .modal-content button { background: var(--primary); color: white; border: none; padding: 1rem; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 1rem; }
-    .close-modal { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); }
+    .detail-map-btn { background-color: var(--primary); color: white; text-align: center; padding: 1.2rem; border-radius: 16px; font-weight: 800; font-size: 1.1rem; text-decoration: none; margin-top: 2rem; box-shadow: 0 4px 15px rgba(229, 30, 77, 0.3); }
 
-    #toast {
-      position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: var(--secondary);
-      color: white; padding: 12px 24px; border-radius: 50px; font-weight: 600; font-size: 0.95rem;
-      z-index: 10001; transition: bottom 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2); white-space: nowrap;
-    }
+    /* Packing & Budget Views */
+    .utility-view { background: var(--card-bg); padding: 2rem; border-radius: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.04); border: 1px solid var(--border-color); margin-bottom: 2rem; animation: slideUpFade 0.4s ease; }
+    .utility-view h2 { margin-top: 0; display: flex; align-items: center; gap: 10px; font-size: 1.6rem; }
+    
+    .pack-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border-color); font-size: 1.1rem; font-weight: 600; cursor: pointer; }
+    .pack-item input { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; }
+    .pack-item.checked { text-decoration: line-through; color: var(--text-muted); }
+
+    .budget-total { background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: white; padding: 2rem; border-radius: 16px; text-align: center; margin-bottom: 1.5rem; }
+    .budget-total h3 { margin: 0 0 5px 0; font-size: 1rem; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px; }
+    .budget-total .amount { font-size: 3rem; font-weight: 800; margin: 0; }
+    .expense-list { list-style: none; padding: 0; margin: 0; }
+    .expense-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border-color); font-weight: 600; }
+    .expense-item span:last-child { color: var(--primary); font-weight: 800; }
+
+    #toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: var(--secondary); color: white; padding: 12px 24px; border-radius: 50px; font-weight: 600; font-size: 0.95rem; z-index: 10001; transition: bottom 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2); white-space: nowrap; }
     #toast.show { bottom: 30px; }
 
     .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-muted); grid-column: 1 / -1; }
@@ -236,14 +140,16 @@
         </svg>
         <div class="logo-text">Barna</div>
       </div>
+      <div id="weather-banner">Checking weather...</div>
     </header>
 
     <nav>
       <button class="active" onclick="switchTab('route', this)">🗺️ Route</button>
       <button onclick="switchTab('sights', this)">📸 Sights</button>
-      <button onclick="switchTab('roadtrips', this)">🚗 Trips</button>
       <button onclick="switchTab('food', this)">🍽️ Food</button>
       <button onclick="switchTab('saved', this)">❤️ Saved</button>
+      <button onclick="switchTab('pack', this)">🧳 Pack</button>
+      <button onclick="switchTab('budget', this)">💶 Budget</button>
     </nav>
 
     <main>
@@ -259,28 +165,58 @@
       </div>
       <div id="app-content"></div>
     </main>
-
-    <button class="feedback-fab" onclick="document.getElementById('feedback-modal').classList.add('active')">
-      💬 Feedback
-    </button>
   </div>
 
   <div id="detail-view"></div>
-
-  <div id="feedback-modal">
-    <div class="modal-content">
-      <button class="close-modal" onclick="document.getElementById('feedback-modal').classList.remove('active')">×</button>
-      <h2>We value your input!</h2>
-      <p style="color: var(--text-muted); margin-bottom: 1rem;">Is an opening time wrong? Let us know!</p>
-      <textarea id="feedback-text" placeholder="Type your feedback here..."></textarea>
-      <button onclick="submitFeedback()">Send Feedback</button>
-    </div>
-  </div>
-
-  <div id="toast">Feedback sent successfully!</div>
+  <div id="toast">Saved successfully!</div>
 
   <script>
-    // --- IMAGES & DATABASE ---
+    // --- SMART LIVE WEATHER API ---
+    async function fetchWeather() {
+      const bcnLat = 41.3888;
+      const bcnLon = 2.159;
+      const weatherBanner = document.getElementById('weather-banner');
+
+      const fetchBarcelonaWeather = async () => {
+        try {
+          const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${bcnLat}&longitude=${bcnLon}&current_weather=true`);
+          const data = await res.json();
+          weatherBanner.innerText = `🌤️ Barcelona: ${data.current_weather.temperature}°C`;
+        } catch (e) {
+          weatherBanner.style.display = 'none';
+        }
+      };
+
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(async (position) => {
+          const userLat = position.coords.latitude;
+          const userLon = position.coords.longitude;
+
+          try {
+            const geoRes = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${userLat}&longitude=${userLon}&localityLanguage=en`);
+            const geoData = await geoRes.json();
+
+            if (geoData.countryCode === 'ES') {
+              const city = geoData.city || geoData.locality || "Spain";
+              const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${userLat}&longitude=${userLon}&current_weather=true`);
+              const weatherData = await weatherRes.json();
+              weatherBanner.innerText = `🌤️ ${city}: ${weatherData.current_weather.temperature}°C`;
+            } else {
+              fetchBarcelonaWeather();
+            }
+          } catch (e) {
+            fetchBarcelonaWeather();
+          }
+        }, (error) => {
+          fetchBarcelonaWeather(); 
+        });
+      } else {
+        fetchBarcelonaWeather();
+      }
+    }
+    fetchWeather();
+
+    // --- IMAGES ---
     const img1 = "https://images.unsplash.com/photo-1583422409516-2895a77efded?auto=format&fit=crop&w=800&q=80"; 
     const img2 = "https://images.unsplash.com/photo-1562883676-8c7feb83f09b?auto=format&fit=crop&w=800&q=80"; 
     const img3 = "https://images.unsplash.com/photo-1647455823871-2dc04aeb53c4?auto=format&fit=crop&w=800&q=80"; 
@@ -295,6 +231,7 @@
     const imgCafe = "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&w=800&q=80";
     const imgIndian = "https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=800&q=80";
 
+    // --- FULL DATABASE ---
     const DATA = {
       route: [
         { id: "r1", day: 1, title: "Sagrada Família", desc: "Start your trip with Gaudí's breathtaking basilica.", fullDesc: "The Basílica de la Sagrada Família is the largest unfinished Catholic church in the world. You must book tickets online weeks in advance.", cost: "€26 - €30", hours: "9:00 AM - 6:00 PM", img: img1, map: "Sagrada+Familia,+Barcelona", rating: "4.8", reviews: "193k" },
@@ -319,23 +256,32 @@
         { id: "r23", day: 5, title: "Sitges Coastline", desc: "End your road trip in the beautiful coastal town of Sitges.", fullDesc: "Known for its beautiful beaches, vibrant nightlife, and historical center, Sitges is a gorgeous whitewashed town just south of Barcelona.", cost: "Free to explore", hours: "Open 24/7", img: img8, map: "Sitges,+Spain", rating: "4.6", reviews: "22k" }
       ],
       sights: [
-        { id: "s1", tag: "Must See", title: "Sagrada Família", desc: "Gaudí's unfinished masterpiece.", fullDesc: "The Basílica de la Sagrada Família is the largest unfinished Catholic church in the world. Designed by Catalan architect Antoni Gaudí.", cost: "€26 - €30", hours: "9:00 AM - 6:00 PM", img: img1, map: "Sagrada+Familia,+Barcelona", rating: "4.8", reviews: "193k" },
-        { id: "s2", tag: "Must See", title: "Park Güell", desc: "Whimsical park with mosaic benches and views.", fullDesc: "A whimsical public park system composed of gardens and architectonic elements.", cost: "€10 Entry", hours: "9:30 AM - 7:30 PM", img: img5, map: "Park+Guell,+Barcelona", rating: "4.5", reviews: "145k" },
-        { id: "s3", tag: "History", title: "Gothic Quarter", desc: "Medieval heart of the city.", fullDesc: "The Barri Gòtic retains a labyrinthine street plan, with many small streets opening out into squares.", cost: "Free", hours: "Open 24/7", img: img4, map: "Gothic+Quarter,+Barcelona", rating: "4.7", reviews: "88k" }
+        { id: "s1", tag: "Must See", title: "Sagrada Família", desc: "Gaudí's unfinished masterpiece.", fullDesc: "The Basílica de la Sagrada Família is the largest unfinished Catholic church in the world. Designed by Catalan architect Antoni Gaudí. You must book tickets online weeks in advance.", cost: "€26 - €30", hours: "9:00 AM - 6:00 PM", img: img1, map: "Sagrada+Familia,+Barcelona", rating: "4.8", reviews: "193k" },
+        { id: "s2", tag: "Must See", title: "Park Güell", desc: "Whimsical park with mosaic benches and views.", fullDesc: "A whimsical public park system composed of gardens and architectonic elements. The famous Monumental Zone requires timed entry tickets.", cost: "€10 Entry", hours: "9:30 AM - 7:30 PM", img: img5, map: "Park+Guell,+Barcelona", rating: "4.5", reviews: "145k" },
+        { id: "s3", tag: "History", title: "Gothic Quarter", desc: "Medieval heart of the city.", fullDesc: "The Barri Gòtic retains a labyrinthine street plan, with many small streets opening out into squares. Discover Roman ruins and medieval architecture.", cost: "Free", hours: "Open 24/7", img: img4, map: "Gothic+Quarter,+Barcelona", rating: "4.7", reviews: "88k" }
       ],
       roadtrips: [
-        { id: "rt1", tag: "Mountains", title: "Montserrat Monastery", desc: "1hr drive. Stunning abbey built high into serrated mountain peaks.", fullDesc: "A multi-peaked mountain range near Barcelona hosting the Benedictine abbey.", cost: "Free (Trains extra)", hours: "7:30 AM - 8:00 PM", img: img7, map: "Montserrat+Abbey", rating: "4.8", reviews: "42k" },
-        { id: "rt2", tag: "Coast", title: "Sitges", desc: "45-min drive south. Beautiful coastal town known for its beaches.", fullDesc: "Known for its beautiful beaches, vibrant nightlife, and historical center.", cost: "Free", hours: "Open 24/7", img: img8, map: "Sitges,+Spain", rating: "4.6", reviews: "22k" },
-        { id: "rt3", tag: "Medieval", title: "Girona", desc: "1.5hr drive north. Preserved medieval city with colorful river houses.", fullDesc: "A city in northern Catalonia known for its medieval architecture.", cost: "Free", hours: "Open 24/7", img: img4, map: "Girona,+Spain", rating: "4.7", reviews: "35k" }
+        { id: "rt1", tag: "Mountains", title: "Montserrat Monastery", desc: "1hr drive. Stunning abbey built high into serrated mountain peaks.", fullDesc: "A multi-peaked mountain range near Barcelona hosting the Benedictine abbey, Santa Maria de Montserrat. Incredible hiking trails and stunning views.", cost: "Free (Trains extra)", hours: "7:30 AM - 8:00 PM", img: img7, map: "Montserrat+Abbey,+Spain", rating: "4.8", reviews: "42k" },
+        { id: "rt2", tag: "Coast", title: "Sitges", desc: "45-min drive south. Beautiful coastal town known for its beaches.", fullDesc: "Known for its beautiful beaches, vibrant nightlife, and historical center, Sitges is a gorgeous whitewashed town just south of Barcelona.", cost: "Free", hours: "Open 24/7", img: img8, map: "Sitges,+Spain", rating: "4.6", reviews: "22k" },
+        { id: "rt3", tag: "Medieval", title: "Girona", desc: "1.5hr drive north. Preserved medieval city with colorful river houses.", fullDesc: "A city in northern Catalonia known for its medieval architecture, walled Old Quarter (Barri Vell), and the Roman remains of the Força Vella fortress.", cost: "Free", hours: "Open 24/7", img: img4, map: "Girona,+Spain", rating: "4.7", reviews: "35k" }
       ],
       food: [
-        { id: "f1", category: "Tapas", tag: "Tapas", title: "Ciudad Condal", desc: "Classic tapas bar with an incredible display of fresh food.", fullDesc: "A Barcelona institution. Expect a wait, but it's worth it.", cost: "€20 - €35 per person", hours: "8:00 AM - 1:30 AM", img: imgTapas, map: "Ciutat+Comtal,+Barcelona", rating: "4.5", reviews: "16.2k" },
-        { id: "f2", category: "Tapas", tag: "Spanish", title: "El Nacional", desc: "Stunning multi-space culinary venue.", fullDesc: "A stunning, massive multi-space culinary venue offering different types of Spanish cuisine under one roof.", cost: "€30 - €50 per person", hours: "12:00 PM - 1:00 AM", img: imgTapas, map: "El+Nacional,+Barcelona", rating: "4.4", reviews: "22k" },
-        { id: "f4", category: "Pizza", tag: "Pizza", title: "Sartoria Panatieri", desc: "Voted one of the best pizzerias in Europe! Organic ingredients.", fullDesc: "Farm-to-table artisanal pizza. They cure their own meats and source organic, local ingredients.", cost: "€15 - €25 per person", hours: "1:00 PM - 11:30 PM", img: imgPizza, map: "Sartoria+Panatieri,+Barcelona", rating: "4.6", reviews: "2.1k" },
-        { id: "f8", category: "Café", tag: "Coffee", title: "Nomad Coffee Lab", desc: "For the serious coffee lovers.", fullDesc: "Some of the best specialty roasted coffee you will find in the city.", cost: "€3 - €8", hours: "8:30 AM - 5:30 PM", img: imgCafe, map: "Nomad+Coffee+Lab,+Barcelona", rating: "4.7", reviews: "2.5k" },
-        { id: "f10", category: "Vegetarian", tag: "Veg", title: "Teresa Carles", desc: "Legendary vegetarian spot. Amazing plant-based tapas.", fullDesc: "One of the most famous and highly rated vegetarian restaurants in the city.", cost: "€25 - €40 per person", hours: "12:00 PM - 11:30 PM", img: imgTapas, map: "Teresa+Carles,+Barcelona", rating: "4.4", reviews: "8.5k" },
-        { id: "f12", category: "Indian", tag: "Upscale", title: "Bembi", desc: "Upscale, highly-rated authentic Indian cuisine.", fullDesc: "Modern, upscale setting offering incredibly flavorful, authentic Indian cuisine in the Eixample district.", cost: "€30 - €50 per person", hours: "1:00 PM - 4:00 PM, 8:00 PM - 11:30 PM", img: imgIndian, map: "Bembi,+Barcelona", rating: "4.5", reviews: "2.8k" },
-        { id: "f15", category: "Asian", tag: "Sushi", title: "Roots & Rolls", desc: "Incredible plant-based sushi and Asian-fusion tapas.", fullDesc: "A completely unique experience offering creative, 100% plant-based sushi rolls and Asian-fusion tapas.", cost: "€20 - €35 per person", hours: "1:00 PM - 11:00 PM", img: imgTapas, map: "Roots+and+Rolls,+Barcelona", rating: "4.6", reviews: "1.4k" }
+        { id: "f1", category: "Tapas", tag: "Tapas", title: "Ciudad Condal", desc: "Classic tapas bar with an incredible display of fresh food.", fullDesc: "A Barcelona institution. Bustling, classic tapas bar with an incredible display of fresh food right when you walk in. Expect a wait, but it's worth it.", cost: "€20 - €35 per person", hours: "8:00 AM - 1:30 AM", img: imgTapas, map: "Ciutat+Comtal,+Barcelona", rating: "4.5", reviews: "16.2k" },
+        { id: "f2", category: "Tapas", tag: "Spanish", title: "El Nacional", desc: "Stunning multi-space culinary venue.", fullDesc: "A stunning, massive multi-space culinary venue offering different types of Spanish cuisine under one roof. Great atmosphere for a group dinner.", cost: "€30 - €50 per person", hours: "12:00 PM - 1:00 AM", img: imgTapas, map: "El+Nacional,+Barcelona", rating: "4.4", reviews: "22k" },
+        { id: "f3", category: "Tapas", tag: "Pinchos", title: "Quimet & Quimet", desc: "Legendary standing-room-only bar.", fullDesc: "Tiny, legendary standing-room-only bar famous for its incredible mounted tapas (montaditos) and fantastic wine selection.", cost: "€15 - €25 per person", hours: "12:00 PM - 4:00 PM, 7:00 PM - 10:30 PM", img: imgTapas, map: "Quimet+and+Quimet,+Barcelona", rating: "4.6", reviews: "8k" },
+        { id: "f4", category: "Pizza", tag: "Pizza", title: "Sartoria Panatieri", desc: "Voted one of the best pizzerias in Europe! Organic ingredients.", fullDesc: "Farm-to-table artisanal pizza. They cure their own meats and source organic, local ingredients for some of the best Neapolitan pizza in the city.", cost: "€15 - €25 per person", hours: "1:00 PM - 11:30 PM", img: imgPizza, map: "Sartoria+Panatieri,+Barcelona", rating: "4.6", reviews: "2.1k" },
+        { id: "f5", category: "Pizza", tag: "Pizza", title: "NAP Antic", desc: "Authentic, affordable Neapolitan Pizza.", fullDesc: "Neapolitan Authentic Pizza. Affordable, fast, and features the perfect wood-fired crust. A local favorite.", cost: "€10 - €20 per person", hours: "1:00 PM - 12:00 AM", img: imgPizza, map: "NAP+Antic,+Barcelona", rating: "4.5", reviews: "4.5k" },
+        { id: "f6", category: "Italian", tag: "Italian", title: "Maccaroni", desc: "Excellent, authentic fresh pasta made daily.", fullDesc: "Excellent, authentic fresh pasta made daily right in front of you. A cozy spot when you need a break from tapas.", cost: "€15 - €25 per person", hours: "1:00 PM - 11:30 PM", img: imgItalian, map: "Maccaroni,+Barcelona", rating: "4.6", reviews: "1.2k" },
+        { id: "f7", category: "Italian", tag: "Italian", title: "Le Cucine Mandarosso", desc: "Hidden gem serving hearty Italian dishes.", fullDesc: "Hidden gem near Palau de la Música serving traditional, hearty Italian dishes and great desserts.", cost: "€20 - €30 per person", hours: "1:00 PM - 11:30 PM", img: imgItalian, map: "Le+Cucine+Mandarosso,+Barcelona", rating: "4.4", reviews: "3.1k" },
+        { id: "f8", category: "Café", tag: "Coffee", title: "Nomad Coffee Lab", desc: "For the serious coffee lovers.", fullDesc: "Some of the best specialty roasted coffee you will find in the city. The perfect place for a high-quality morning espresso.", cost: "€3 - €8", hours: "8:30 AM - 5:30 PM", img: imgCafe, map: "Nomad+Coffee+Lab,+Barcelona", rating: "4.7", reviews: "2.5k" },
+        { id: "f9", category: "Café", tag: "Brunch", title: "Brunch & Cake", desc: "Highly photogenic brunch dishes.", fullDesc: "Famous for wildly creative, highly photogenic brunch dishes and enormous baked goods. Expect a line on weekends.", cost: "€15 - €25 per person", hours: "9:00 AM - 5:00 PM", img: imgCafe, map: "Brunch+and+Cake,+Barcelona", rating: "4.3", reviews: "6.8k" },
+        { id: "f10", category: "Vegetarian", tag: "Veg", title: "Teresa Carles", desc: "Legendary vegetarian spot. Amazing plant-based tapas.", fullDesc: "One of the most famous and highly rated vegetarian restaurants in the city. Located near Plaça de Catalunya, offering incredible plant-based dishes.", cost: "€25 - €40 per person", hours: "12:00 PM - 11:30 PM", img: imgTapas, map: "Teresa+Carles,+Barcelona", rating: "4.4", reviews: "8.5k" },
+        { id: "f11", category: "Vegetarian", tag: "Vegan", title: "Rasoterra", desc: "Cozy vegan bistro tucked in the Gothic Quarter.", fullDesc: "Cozy vegan bistro tucked in the Gothic Quarter. Focuses on local, organic slow-food and an excellent natural wine list.", cost: "€20 - €35 per person", hours: "1:00 PM - 11:00 PM", img: imgTapas, map: "Rasoterra,+Barcelona", rating: "4.6", reviews: "1.2k" },
+        { id: "f12", category: "Indian", tag: "Upscale", title: "Bembi", desc: "Upscale, highly-rated authentic Indian cuisine.", fullDesc: "Modern, upscale setting offering incredibly flavorful, authentic Indian cuisine in the Eixample district. A fantastic spot for a date or nice dinner.", cost: "€30 - €50 per person", hours: "1:00 PM - 4:00 PM, 8:00 PM - 11:30 PM", img: imgIndian, map: "Bembi,+Barcelona", rating: "4.5", reviews: "2.8k" },
+        { id: "f13", category: "Indian", tag: "Street Food", title: "Surya", desc: "Vibrant and incredibly fun spot for authentic Indian street food.", fullDesc: "Modeled after the colorful streets of Mumbai, this fun, vibrant restaurant serves incredible Indian street food, curries, and cocktails.", cost: "€15 - €25 per person", hours: "12:00 PM - 12:00 AM", img: imgIndian, map: "Surya+Pau+Claris,+Barcelona", rating: "4.2", reviews: "1.9k" },
+        { id: "f14", category: "Indian", tag: "Home-style", title: "Swad", desc: "Delicious, home-style traditional curries.", fullDesc: "A hidden gem in Poblenou famous for absolutely delicious, home-style traditional curries. Highly recommended by locals.", cost: "€15 - €25 per person", hours: "1:00 PM - 11:00 PM", img: imgIndian, map: "Swad,+Barcelona", rating: "4.7", reviews: "950" },
+        { id: "f15", category: "Asian", tag: "Sushi", title: "Roots & Rolls", desc: "Incredible plant-based sushi and Asian-fusion tapas.", fullDesc: "A completely unique experience offering creative, 100% plant-based sushi rolls and Asian-fusion tapas in a sleek, modern environment.", cost: "€20 - €35 per person", hours: "1:00 PM - 11:00 PM", img: imgTapas, map: "Roots+and+Rolls,+Barcelona", rating: "4.6", reviews: "1.4k" },
+        { id: "f16", category: "Asian", tag: "Pan-Asian", title: "Boa-Bao", desc: "Authentic street food from across Asia.", fullDesc: "A vibrant restaurant offering authentic street food from across Asia in a beautiful setting. The Bao buns are a must-try.", cost: "€25 - €40 per person", hours: "1:00 PM - 11:30 PM", img: imgTapas, map: "Boa-Bao,+Barcelona", rating: "4.4", reviews: "3.2k" }
       ]
     };
 
@@ -344,259 +290,74 @@
     const detailView = document.getElementById('detail-view');
     const ALL_ITEMS = [...DATA.route, ...DATA.sights, ...DATA.roadtrips, ...DATA.food];
 
-    let favorites = JSON.parse(localStorage.getItem('barna_favorites')) || [];
+    // --- LOCAL STORAGE STATE ---
+    let favorites = JSON.parse(localStorage.getItem('barna_favs')) || [];
+    let visited = JSON.parse(localStorage.getItem('barna_visited')) || [];
+    let notes = JSON.parse(localStorage.getItem('barna_notes')) || {};
+    let expenses = JSON.parse(localStorage.getItem('barna_expenses')) || {};
+    
+    let defaultPack = [
+      { id: 'p1', task: 'Passport & ID', done: false },
+      { id: 'p2', task: 'Travel Adapter (Type C)', done: false },
+      { id: 'p3', task: 'Power Bank', done: false },
+      { id: 'p4', task: 'Comfortable Walking Shoes', done: false },
+      { id: 'p5', task: 'Sunglasses & Sunscreen', done: false }
+    ];
+    let packingList = JSON.parse(localStorage.getItem('barna_pack')) || defaultPack;
 
+    // --- LOGIC FUNCTIONS ---
     function toggleFavorite(itemId, event) {
-      event.stopPropagation();
-      if (favorites.includes(itemId)) {
-        favorites = favorites.filter(id => id !== itemId);
-      } else {
-        favorites.push(itemId);
-      }
-      localStorage.setItem('barna_favorites', JSON.stringify(favorites));
-      showToast(favorites.includes(itemId) ? "❤️ Added to Saved" : "Removed from Saved");
+      if(event) event.stopPropagation();
+      if (favorites.includes(itemId)) favorites = favorites.filter(id => id !== itemId);
+      else favorites.push(itemId);
+      localStorage.setItem('barna_favs', JSON.stringify(favorites));
+      showToast(favorites.includes(itemId) ? "❤️ Saved" : "Removed");
+      refreshCurrentView();
+    }
+
+    function toggleVisited(itemId) {
+      if (visited.includes(itemId)) visited = visited.filter(id => id !== itemId);
+      else visited.push(itemId);
+      localStorage.setItem('barna_visited', JSON.stringify(visited));
       
+      const btn = document.getElementById('visited-btn');
+      if (visited.includes(itemId)) {
+        btn.classList.add('active');
+        btn.innerText = "✅ VISITED";
+      } else {
+        btn.classList.remove('active');
+        btn.innerText = "Mark as Visited";
+      }
+      refreshCurrentView();
+    }
+
+    function saveNote(itemId, value) {
+      notes[itemId] = value;
+      localStorage.setItem('barna_notes', JSON.stringify(notes));
+    }
+
+    function saveExpense(itemId, value, title) {
+      expenses[itemId] = { amount: Number(value) || 0, title: title };
+      localStorage.setItem('barna_expenses', JSON.stringify(expenses));
+    }
+
+    function togglePack(id) {
+      const item = packingList.find(i => i.id === id);
+      if(item) item.done = !item.done;
+      localStorage.setItem('barna_pack', JSON.stringify(packingList));
+      renderPackingTab();
+    }
+
+    function refreshCurrentView() {
       const activeTabBtn = document.querySelector('nav button.active');
-      if (activeTabBtn) activeTabBtn.click();
-      
-      const detailBtn = document.getElementById('detail-fav-btn');
-      if (detailBtn) {
-        if (favorites.includes(itemId)) detailBtn.classList.add('active');
-        else detailBtn.classList.remove('active');
+      if (activeTabBtn && document.getElementById('detail-view').classList.contains('active') === false) {
+        activeTabBtn.click();
       }
-    }
-
-    function getHeartIcon(isFav) {
-      return `<svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
-    }
-
-    function getRatingHTML(rating, reviews) {
-      if (!rating) return '';
-      return `<div class="rating-container"><span class="star">★</span><strong>${rating}</strong><span class="review-count">(${reviews} reviews)</span></div>`;
-    }
-
-    function moveRouteItem(itemId, newDay) {
-      const itemIndex = DATA.route.findIndex(i => i.id === itemId);
-      if (itemIndex > -1) { DATA.route[itemIndex].day = parseInt(newDay); renderRouteTab(); }
-    }
-
-    // --- NEW: SMART ROUTE LAUNCHER ---
-    function openDayRoute(dayNumber) {
-      const dayItems = DATA.route.filter(item => item.day === dayNumber);
-      if (dayItems.length === 0) return;
-      
-      if (dayItems.length === 1) {
-        window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(dayItems[0].map)}`, '_blank');
-        return;
+      const detailFavBtn = document.getElementById('detail-fav-btn');
+      if (detailFavBtn) {
+        const itemId = document.getElementById('current-detail-id').value;
+        detailFavBtn.innerHTML = getHeartIcon(favorites.includes(itemId));
       }
-
-      const origin = encodeURIComponent(dayItems[0].map);
-      const destination = encodeURIComponent(dayItems[dayItems.length - 1].map);
-      
-      let waypoints = '';
-      if (dayItems.length > 2) {
-        const mids = dayItems.slice(1, dayItems.length - 1);
-        waypoints = '&waypoints=' + mids.map(item => encodeURIComponent(item.map)).join('|');
-      }
-
-      // Day 5 is a road trip (driving), others are walking
-      const travelMode = dayNumber === 5 ? 'driving' : 'walking';
-      
-      const mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}${waypoints}&travelmode=${travelMode}`;
-      window.open(mapsUrl, '_blank');
-    }
-
-    function openDetail(itemId) {
-      const item = ALL_ITEMS.find(i => i.id === itemId);
-      if(!item) return;
-
-      const isFav = favorites.includes(item.id);
-      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${item.map}`;
-      
-      detailView.innerHTML = `
-        <div class="detail-hero" style="background-image: url('${item.img}')">
-          <button class="back-btn" onclick="closeDetail()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><polyline points="12 19 5 12 12 5"></polyline></svg>
-            Back
-          </button>
-        </div>
-        <div class="detail-body">
-          <button id="detail-fav-btn" class="detail-fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavorite('${item.id}', event)">
-            ${getHeartIcon(isFav)}
-          </button>
-
-          <div style="display: flex; gap: 8px; margin-bottom: 0.5rem;">
-            <span class="tag tag-default" style="margin-bottom:0;">${item.tag}</span>
-          </div>
-          
-          <h1 class="detail-title">${item.title}</h1>
-          ${getRatingHTML(item.rating, item.reviews)}
-          
-          <div class="info-row">
-            <span class="info-icon">💰</span>
-            <div class="info-text">
-              <span class="info-label">Cost / Entry</span>
-              <span class="info-val">${item.cost}</span>
-            </div>
-          </div>
-          
-          <div class="info-row">
-            <span class="info-icon">🕒</span>
-            <div class="info-text">
-              <span class="info-label">Opening Hours</span>
-              <span class="info-val">${item.hours}</span>
-            </div>
-          </div>
-
-          <p class="detail-desc">${item.fullDesc}</p>
-          
-          <a href="${mapsUrl}" target="_blank" class="detail-map-btn">📍 Open in Google Maps</a>
-        </div>
-      `;
-      detailView.classList.add('active');
-    }
-
-    function closeDetail() {
-      detailView.classList.remove('active');
-    }
-
-    function renderRouteTab() {
-      let html = '';
-      let globalIndex = 0; 
-      
-      contentDiv.className = ''; // Remove grid
-      
-      for (let d = 1; d <= 5; d++) {
-        const dayItems = DATA.route.filter(item => item.day === d);
-        if(dayItems.length === 0) continue;
-
-        // Day Header & Timeline Wrapper
-        html += `
-        <div class="day-group">
-          <div class="day-header">
-            <h2>Day ${d}</h2>
-            <button class="route-master-btn" onclick="openDayRoute(${d})">
-              🗺️ Open Day ${d} Route in Maps
-            </button>
-          </div>
-        `;
-
-        dayItems.forEach((item, index) => {
-          const isFav = favorites.includes(item.id);
-          const tagClass = `day-${item.day}`;
-          const delay = globalIndex * 0.05; 
-          const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${item.map}`;
-          
-          const isEnd = index === dayItems.length - 1;
-          const dotClass = isEnd ? "timeline-dot end" : "timeline-dot";
-
-          html += `
-            <div class="${dotClass}" style="animation: slideUpFade 0.6s backwards; animation-delay: ${delay}s;"></div>
-            <div class="card" style="animation-delay: ${delay}s" onclick="openDetail('${item.id}')">
-              <div class="card-img-container">
-                <img src="${item.img}" alt="${item.title}" class="card-img" onerror="this.onerror=null;this.src='https://placehold.co/600x400?text=${item.title.replace(/ /g, '+')}';">
-                <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavorite('${item.id}', event)">${getHeartIcon(isFav)}</button>
-              </div>
-              <div class="card-content">
-                <span class="tag ${tagClass}">Stop ${index + 1}</span>
-                <h3>${item.title}</h3>
-                ${getRatingHTML(item.rating, item.reviews)}
-                <p class="preview-text">${item.desc}</p>
-                
-                <div class="reschedule-box" onclick="event.stopPropagation()">
-                  <span>🗓️ Move day:</span>
-                  <select onchange="moveRouteItem('${item.id}', this.value); event.stopPropagation();">
-                    <option value="1" ${item.day == 1 ? 'selected' : ''}>Day 1</option>
-                    <option value="2" ${item.day == 2 ? 'selected' : ''}>Day 2</option>
-                    <option value="3" ${item.day == 3 ? 'selected' : ''}>Day 3</option>
-                    <option value="4" ${item.day == 4 ? 'selected' : ''}>Day 4</option>
-                    <option value="5" ${item.day == 5 ? 'selected' : ''}>Day 5</option>
-                  </select>
-                </div>
-                
-                <a href="${mapsUrl}" target="_blank" class="map-btn" onclick="event.stopPropagation()">📍 Get Directions to this stop</a>
-              </div>
-            </div>`;
-          globalIndex++;
-        });
-
-        html += `</div>`; // End day-group
-      }
-      contentDiv.innerHTML = html;
-    }
-
-    function renderList(dataArray) {
-      contentDiv.className = 'card-container'; // Restore grid
-      
-      if (dataArray.length === 0) {
-        contentDiv.innerHTML = `
-          <div class="empty-state">
-            <h3>No places found</h3>
-            <p>Go explore the other tabs and click the heart icon to save places here!</p>
-          </div>
-        `;
-        return;
-      }
-
-      let html = '';
-      dataArray.forEach((item, index) => {
-        const isFav = favorites.includes(item.id);
-        const tagClass = item.tagClass ? item.tagClass : 'tag-default';
-        const delay = index * 0.05; 
-        const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${item.map}`;
-        
-        html += `
-          <div class="card" style="animation-delay: ${delay}s" onclick="openDetail('${item.id}')">
-            <div class="card-img-container">
-              <img src="${item.img}" alt="${item.title}" class="card-img" onerror="this.onerror=null;this.src='https://placehold.co/600x400?text=${item.title.replace(/ /g, '+')}';">
-              <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavorite('${item.id}', event)">${getHeartIcon(isFav)}</button>
-            </div>
-            <div class="card-content">
-              <span class="tag ${tagClass}">${item.tag}</span>
-              <h3>${item.title}</h3>
-              ${getRatingHTML(item.rating, item.reviews)}
-              <p class="preview-text">${item.desc}</p>
-              
-              <a href="${mapsUrl}" target="_blank" class="map-btn" onclick="event.stopPropagation()" style="margin-top: 1rem;">📍 Get Directions</a>
-            </div>
-          </div>`;
-      });
-      contentDiv.innerHTML = html;
-    }
-
-    function switchTab(tabId, buttonElement) {
-      document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
-      buttonElement.classList.add('active');
-
-      if (tabId === 'food') {
-        filterBar.style.display = 'block';
-        filterFood('All', filterBar.querySelector('button')); 
-      } else {
-        filterBar.style.display = 'none';
-        if (tabId === 'route') { 
-          renderRouteTab(); 
-        } else if (tabId === 'saved') {
-          const savedItems = ALL_ITEMS.filter(item => favorites.includes(item.id));
-          const uniqueSavedItems = Array.from(new Set(savedItems.map(a => a.id))).map(id => savedItems.find(a => a.id === id));
-          renderList(uniqueSavedItems);
-        } else { 
-          renderList(DATA[tabId]); 
-        }
-      }
-    }
-
-    function filterFood(category, buttonElement) {
-      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-      buttonElement.classList.add('active');
-      renderList(category === 'All' ? DATA.food : DATA.food.filter(item => item.category === category));
-    }
-
-    function submitFeedback() {
-      const text = document.getElementById('feedback-text').value;
-      if (text.trim() === '') return;
-      document.getElementById('feedback-modal').classList.remove('active');
-      document.getElementById('feedback-text').value = '';
-      showToast("Thanks! Your feedback was sent.");
     }
 
     function showToast(message) {
@@ -606,7 +367,183 @@
       setTimeout(() => { toast.classList.remove('show'); }, 3000);
     }
 
-    // Initialize
+    function getHeartIcon(isFav) {
+      const fill = isFav ? "var(--primary)" : "none";
+      return `<svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:var(--text-main);fill:${fill}"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
+    }
+
+    function getRatingHTML(rating, rev) {
+      return `<div class="rating-container"><span class="star">★</span><strong>${rating}</strong><span class="review-count">(${rev})</span></div>`;
+    }
+
+    function openDayRoute(dayNumber) {
+      const dayItems = DATA.route.filter(item => item.day === dayNumber);
+      if (dayItems.length === 0) return;
+      const origin = encodeURIComponent(dayItems[0].map);
+      const destination = encodeURIComponent(dayItems[dayItems.length - 1].map);
+      let waypoints = dayItems.length > 2 ? '&waypoints=' + dayItems.slice(1, -1).map(i => encodeURIComponent(i.map)).join('|') : '';
+      const travelMode = dayNumber === 5 ? 'driving' : 'walking';
+      window.open(`https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}${waypoints}&travelmode=${travelMode}`, '_blank');
+    }
+
+    // --- VIEWS ---
+    function openDetail(itemId) {
+      const item = ALL_ITEMS.find(i => i.id === itemId);
+      if(!item) return;
+      const isFav = favorites.includes(item.id);
+      const isVisited = visited.includes(item.id);
+      const noteVal = notes[item.id] || "";
+      const expVal = expenses[item.id] ? expenses[item.id].amount : "";
+      
+      detailView.innerHTML = `
+        <input type="hidden" id="current-detail-id" value="${item.id}">
+        <div class="detail-hero" style="background-image: url('${item.img}')">
+          <button class="back-btn" onclick="closeDetail()">🔙 Back</button>
+        </div>
+        <div class="detail-body">
+          <button id="detail-fav-btn" class="detail-fav-btn" onclick="toggleFavorite('${item.id}', event)">
+            ${getHeartIcon(isFav)}
+          </button>
+          <h1 class="detail-title">${item.title}</h1>
+          ${getRatingHTML(item.rating, item.reviews)}
+          
+          <div class="detail-tools">
+            <button id="visited-btn" class="visited-toggle ${isVisited ? 'active' : ''}" onclick="toggleVisited('${item.id}')">
+              ${isVisited ? '✅ VISITED' : 'Mark as Visited'}
+            </button>
+            <div class="tool-group">
+              <label>📝 Personal Notes</label>
+              <textarea class="note-input" placeholder="Type notes here..." onchange="saveNote('${item.id}', this.value)">${noteVal}</textarea>
+            </div>
+            <div class="tool-group">
+              <label>💶 Spent Here (€)</label>
+              <input type="number" class="expense-input" placeholder="0.00" value="${expVal}" onchange="saveExpense('${item.id}', this.value, '${item.title}')">
+            </div>
+          </div>
+
+          <div style="margin-top:2rem;">
+            <p class="detail-desc">${item.fullDesc}</p>
+            <div class="info-row"><span class="info-icon">💰</span><div class="info-text"><span class="info-label">Cost</span><span class="info-val">${item.cost}</span></div></div>
+            <div class="info-row"><span class="info-icon">🕒</span><div class="info-text"><span class="info-label">Hours</span><span class="info-val">${item.hours}</span></div></div>
+          </div>
+          
+          <a href="https://www.google.com/maps/search/?api=1&query=$${encodeURIComponent(item.map)}" target="_blank" class="detail-map-btn">📍 Open in Maps</a>
+        </div>`;
+      detailView.classList.add('active');
+    }
+
+    function closeDetail() { detailView.classList.remove('active'); }
+
+    function buildCard(item, isTimeline = false, tagText = "", delay = 0) {
+      const isFav = favorites.includes(item.id);
+      const isVisited = visited.includes(item.id);
+      const visClass = isVisited ? "visited-card" : "";
+      const dot = isTimeline ? `<div class="timeline-dot"></div>` : "";
+      
+      return `
+        ${dot}
+        <div class="card ${visClass}" style="animation-delay: ${delay}s" onclick="openDetail('${item.id}')">
+          <div class="visited-badge">✅ Visited</div>
+          <div class="card-img-container">
+            <img src="${item.img}" class="card-img">
+            <button class="fav-btn" onclick="toggleFavorite('${item.id}', event)">${getHeartIcon(isFav)}</button>
+          </div>
+          <div class="card-content">
+            <span class="tag tag-default">${tagText}</span>
+            <h3>${item.title}</h3>
+            ${getRatingHTML(item.rating, item.reviews)}
+            <p class="preview-text">${item.desc}</p>
+            <a href="https://www.google.com/maps/search/?api=1&query=$${encodeURIComponent(item.map)}" target="_blank" class="map-btn" onclick="event.stopPropagation()">📍 Directions</a>
+          </div>
+        </div>`;
+    }
+
+    function renderRouteTab() {
+      contentDiv.className = ''; 
+      let html = '';
+      for (let d = 1; d <= 5; d++) { 
+        const dayItems = DATA.route.filter(item => item.day === d);
+        if(dayItems.length === 0) continue;
+        html += `<div class="day-group"><div class="day-header"><h2>Day ${d}</h2><button class="route-master-btn" onclick="openDayRoute(${d})">🗺️ Open Day ${d} Route</button></div>`;
+        dayItems.forEach((item, idx) => { html += buildCard(item, true, `Stop ${idx + 1}`, idx * 0.05); });
+        html += `</div>`; 
+      }
+      contentDiv.innerHTML = html;
+    }
+
+    function renderList(dataArray) {
+      contentDiv.className = 'card-container'; 
+      if (dataArray.length === 0) {
+        contentDiv.innerHTML = `<div class="empty-state"><h3>No places found</h3></div>`;
+        return;
+      }
+      contentDiv.innerHTML = dataArray.map((item, idx) => buildCard(item, false, item.tag || item.title, idx * 0.05)).join('');
+    }
+
+    function renderPackingTab() {
+      contentDiv.className = '';
+      let html = `<div class="utility-view"><h2>🧳 Trip Checklist</h2>`;
+      packingList.forEach(item => {
+        html += `
+          <div class="pack-item ${item.done ? 'checked' : ''}" onclick="togglePack('${item.id}')">
+            <input type="checkbox" ${item.done ? 'checked' : ''}>
+            <span>${item.task}</span>
+          </div>`;
+      });
+      html += `</div>`;
+      contentDiv.innerHTML = html;
+    }
+
+    function renderBudgetTab() {
+      contentDiv.className = '';
+      let total = Object.values(expenses).reduce((sum, item) => sum + item.amount, 0);
+      let html = `
+        <div class="utility-view">
+          <div class="budget-total">
+            <h3>Total Trip Expenses</h3>
+            <p class="amount">€${total.toFixed(2)}</p>
+          </div>
+          <h2>🧾 Expense Breakdown</h2>
+          <ul class="expense-list">`;
+      
+      let hasExpenses = false;
+      for (let key in expenses) {
+        if(expenses[key].amount > 0) {
+          hasExpenses = true;
+          html += `<li class="expense-item"><span>${expenses[key].title}</span><span>€${expenses[key].amount.toFixed(2)}</span></li>`;
+        }
+      }
+      if(!hasExpenses) html += `<li class="expense-item" style="color:var(--text-muted); justify-content:center;">No expenses logged yet. Open a place to log spending!</li>`;
+      
+      html += `</ul></div>`;
+      contentDiv.innerHTML = html;
+    }
+
+    function switchTab(tabId, buttonElement) {
+      document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
+      buttonElement.classList.add('active');
+      filterBar.style.display = (tabId === 'food') ? 'block' : 'none';
+
+      if (tabId === 'route') renderRouteTab(); 
+      else if (tabId === 'pack') renderPackingTab();
+      else if (tabId === 'budget') renderBudgetTab();
+      else if (tabId === 'saved') {
+        const savedItems = ALL_ITEMS.filter(item => favorites.includes(item.id));
+        renderList(Array.from(new Set(savedItems.map(a => a.id))).map(id => savedItems.find(a => a.id === id)));
+      } 
+      else if (tabId === 'food') {
+        filterFood('All', filterBar.querySelector('button'));
+      }
+      else renderList(DATA[tabId]); 
+    }
+
+    function filterFood(category, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderList(category === 'All' ? DATA.food : DATA.food.filter(item => item.category === category));
+    }
+
+    // Init
     switchTab('route', document.querySelector('nav button'));
   </script>
 </body>
